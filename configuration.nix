@@ -135,7 +135,7 @@ in
   # };
 
   # Enable the X11 windowing system.
-  services.xserver.enable = true;
+  # services.xserver.enable = true;
 
   # Enable X11 forwarding.
   # Enable the OpenSSH daemon.
@@ -172,7 +172,17 @@ in
   # services.xserver.displayManager.sddm.enable = true;
   # services.xserver.desktopManager.plasma5.enable = true;
   # Enable dwm
-  services.xserver.windowManager.dwm.enable = true;
+  # services.xserver.windowManager.dwm.enable = true;
+
+  services.xserver = {
+    enable = true;
+    desktopManager = {
+      xterm.enable = false;
+      xfce.enable = true;
+    };
+    displayManager.defaultSession = "xfce";
+  };
+
   services.gvfs = {
     enable = true;
     package = lib.mkForce pkgs.gnome3.gvfs;
@@ -237,9 +247,9 @@ in
   # };
 
   # Overlay setup
-  services.emacs.package = with pkgs; ((emacsPackagesFor emacsGcc).emacsWithPackages (epkgs: [
+  # services.emacs.package = with pkgs; ((emacsPackagesFor emacsGcc).emacsWithPackages (epkgs: [
     # epkgs.emacspeak
-  ]));
+  # ]));
   # services.emacs.enable = true; # Optional emacs daemon/server mode.
 
   # D-Bus
@@ -276,11 +286,11 @@ in
 
   # Overlay configuration
   nixpkgs.overlays = [
-    (import (builtins.fetchGit {
-      url = "https://github.com/nix-community/emacs-overlay.git";
-      ref = "master";
-      rev = "13bd8f5d68519898e403d3cab231281b1fbd0d71"; # change the revision as needed
-     }))
+    # (import (builtins.fetchGit {
+    #   url = "https://github.com/nix-community/emacs-overlay.git";
+    #   ref = "master";
+    #   rev = "13bd8f5d68519898e403d3cab231281b1fbd0d71"; # change the revision as needed
+    # }))
 
     # Wine
     (self: super: {
@@ -530,6 +540,13 @@ in
     # Games
     vkquake
 
+    # XFCE
+    xfce.xfce4-whiskermenu-plugin
+    ulauncher
+    picom
+    glava
+    conky
+
     # Desktop environment utils
     xfce.thunar
     xfce.thunar-volman
@@ -543,7 +560,7 @@ in
     okular
     konsole
     guake
-    picom
+    # picom
     gnome.zenity
     # xpra # Buggy
     virtualgl
@@ -880,11 +897,11 @@ in
     # vscode-with-extensions
 
     # Overlays
-    ((emacsPackagesFor emacsGcc).emacsWithPackages (epkgs: [
+    #((emacsPackagesFor emacsGcc).emacsWithPackages (epkgs: [
       # epkgs.emacspeak
-      epkgs.sonic-pi
-      epkgs.languagetool
-    ]))
+      # epkgs.sonic-pi
+      # epkgs.languagetool
+    #]))
     wine
     winetricks
   ];
