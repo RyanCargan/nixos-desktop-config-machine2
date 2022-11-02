@@ -639,13 +639,14 @@ in
     parted
 
     # Productivity tools
-    pomotroid
+    # pomotroid # Electron dep seems broken
     gnome.pomodoro
 
     # Bluetooth
     # obexftp
 
     # Doc utils
+    xournalpp
     pandoc
     vale
     gephi
