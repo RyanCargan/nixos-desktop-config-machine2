@@ -460,7 +460,7 @@ in
     #unstable.go_1_18
     sass
     ungoogled-chromium
-    postman
+    # postman
     insomnia
     mkcert
 
@@ -501,7 +501,7 @@ in
     virt-manager
     vagrant
     # unstable.lxd
-    x11docker
+    # x11docker
     xorg.xdpyinfo
     xclip
 
@@ -518,9 +518,9 @@ in
 
     # SDKs
     #cudatoolkit_11_2
-    cudaPackages_11_2.cudatoolkit
+    # cudaPackages_11_2.cudatoolkit
     #cudnn_cudatoolkit_11_2
-    cudaPackages_11_2.cudnn
+    # cudaPackages_11_2.cudnn
     #cudnn_cudatoolkit_11_2 # NVIDIA CUDA Deep Neural Network library (CUDA 11.2 + cuDNN 8.1.1 for TensorFlow 2.7.0 compat)
     git-lfs # Git extension for versioning large files
     gcc # GNU Compiler Collection, version 10.3.0 (wrapper script)
@@ -545,7 +545,7 @@ in
     SDL2 # SDL2_ttf SDL2_net SDL2_gfx SDL2_mixer SDL2_image smpeg2 guile-sdl2
 
     # Games
-    vkquake
+    # vkquake
 
     # XFCE
     xfce.xfce4-whiskermenu-plugin
@@ -583,16 +583,16 @@ in
     flameshot
 
     # Emacs deps
-    espeak-classic
-    speechd
-    tcl
-    tclx
-    libtool
-    libvterm-neovim
+    # espeak-classic
+    # speechd
+    # tcl
+    # tclx
+    # libtool
+    # libvterm-neovim
     texlive.combined.scheme-full
-    mpg321
-    mpg123
-    mplayer
+    # mpg321
+    # mpg123
+    # mplayer
 
     # Sys utils
     teams
@@ -665,6 +665,8 @@ in
     github-to-sqlite
     sqlite-utils
     sqlitebrowser
+    # redis-desktop-manager
+    jmeter
 
     # GIS utils
     qgis
@@ -704,55 +706,55 @@ in
     # Python 3
     (let
       my-python-packages = python-packages: with python-packages; [
-        requests
-        psycopg2
-        #tensorflowWithCuda
-        flask flask_wtf flask_mail flask_login flask_assets flask-sslify flask-silk flask-restx flask-openid flask-cors flask-common flask-bcrypt flask-babel flask-api flask-admin flask_sqlalchemy flask_migrate
-        fire
-        typer
+        # requests
+        # psycopg2
+        # tensorflowWithCuda
+        # flask flask_wtf flask_mail flask_login flask_assets flask-sslify flask-silk flask-restx flask-openid flask-cors flask-common flask-bcrypt flask-babel flask-api flask-admin flask_sqlalchemy flask_migrate
+        # fire
+        # typer
         # pytest
         poetry
         poetry2conda
         nixpkgs-pytools
-        rope
-        inkex
-        pyzmq
+        # rope
+        # inkex
+        # pyzmq
         # Sci-Comp Tools
         # jupyterlab
-        (pytorch.override {cudaSupport = true; cudaPackages = cudaPackages_11_6;})
+        # (pytorch.override {cudaSupport = true; cudaPackages = cudaPackages_11_6;})
         scikit-learn jax objax optax flax transformers tokenizers fasttext numpy scipy sympy matplotlib pandas scikitimage statsmodels scikits-odes traittypes xarray
         unstable.python39Packages.optuna
         # jaxlib
         # (jaxlib.override {cudaSupport = true;}) # Same as jaxlibWithCuda
-        (jaxlib.override {cudaSupport = true; cudaPackages = cudaPackages_11_6;})
-        (numba.override {cudaSupport = true; cudaPackages = cudaPackages_11_6;})
-        (cupy.override {cudaPackages = cudaPackages_11_6;})
-        (tensorflow.override {cudaSupport = true; cudaPackages = cudaPackages_11_6;})
+        # (jaxlib.override {cudaSupport = true; cudaPackages = cudaPackages_11_6;})
+        # (numba.override {cudaSupport = true; cudaPackages = cudaPackages_11_6;})
+        # (cupy.override {cudaPackages = cudaPackages_11_6;})
+        # (tensorflow.override {cudaSupport = true; cudaPackages = cudaPackages_11_6;})
         spacy
         pytesseract
         # Scraping Tools
-        selenium
-        beautifulsoup4
-        folium
-        lxml
-        yarl
-        networkx
-        faker
+        # selenium
+        # beautifulsoup4
+        # folium
+        # lxml
+        # yarl
+        # networkx
+        # faker
         # Misc
         pip
-        pyside2
-        pyside2-tools
-        shiboken2
+        # pyside2
+        # pyside2-tools
+        # shiboken2
         virtualenv
         virtualenvwrapper
-        pillow
+        # pillow
         virtual-display
         EasyProcess
         pdftotext
         # Web-Dev Tools
-        fastapi sqlalchemy sqlalchemy-utils sqlalchemy-migrate sqlalchemy-jsonfield sqlalchemy-i18n sqlalchemy-citext alembic ColanderAlchemy
+        # fastapi sqlalchemy sqlalchemy-utils sqlalchemy-migrate sqlalchemy-jsonfield sqlalchemy-i18n sqlalchemy-citext alembic ColanderAlchemy
         # Game Dev Tools
-        pybullet pygame pyglet
+        # pybullet pygame pyglet
         # General tools
         pipx
         sh
@@ -829,18 +831,18 @@ in
     #gnome.seahorse
 
     # Vulkan
-    vulkan-tools
-    glslang
-    glm
-    vulkan-tools-lunarg
-    vulkan-loader
-    vulkan-headers
-    vulkan-validation-layers
-    spirv-tools
-    spirv-cross
-    spirv-headers
-    spirv-llvm-translator
-    mangohud
+    # vulkan-tools
+    # glslang
+    # glm
+    # vulkan-tools-lunarg
+    # vulkan-loader
+    # vulkan-headers
+    # vulkan-validation-layers
+    # spirv-tools
+    # spirv-cross
+    # spirv-headers
+    # spirv-llvm-translator
+    # mangohud
 
     # Coq
     coq
