@@ -732,6 +732,10 @@ in
         # (tensorflow.override {cudaSupport = true; cudaPackages = cudaPackages_11_6;})
         spacy
         pytesseract
+        duckdb
+        duckdb-engine
+        jaxlibWithCuda
+        numbaWithCuda
         # Scraping Tools
         # selenium
         # beautifulsoup4
