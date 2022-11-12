@@ -94,8 +94,10 @@ in
   virtualisation.libvirtd.enable = true;
   boot.extraModprobeConfig = "options kvm_amd nested=1"; # Nested virtualization (requires AMD-V).
   virtualisation.lxd.enable = false;
-  virtualisation.docker.enable = true;
-  virtualisation.docker.enableNvidia = true;
+  virtualisation.docker = {
+    enable = true;
+    enableNvidia = true;
+  };
   # boot.kernelModules = [ "kvm-amd" "kvm-intel" ]; # Only needed if kvm-amd/intel is not set in hardware-configuration.nix AFAIK.
 
   # Allow proprietary packages
@@ -704,8 +706,11 @@ in
     jbang
 
     # Python 3
-    (let
-      my-python-packages = python-packages: with python-packages; [
+    #python39.withPackages (p: with p; [
+    #  duckdb
+    #])
+    # (let
+      # my-python-packages = python-packages: with python-packages; [
         # requests
         # psycopg2
         # tensorflowWithCuda
@@ -713,29 +718,29 @@ in
         # fire
         # typer
         # pytest
-        poetry
-        poetry2conda
-        nixpkgs-pytools
+        # poetry
+        # poetry2conda
+        # nixpkgs-pytools
         # rope
         # inkex
         # pyzmq
         # Sci-Comp Tools
         # jupyterlab
         # (pytorch.override {cudaSupport = true; cudaPackages = cudaPackages_11_6;})
-        scikit-learn jax objax optax flax transformers tokenizers fasttext numpy scipy sympy matplotlib pandas scikitimage statsmodels scikits-odes traittypes xarray
-        unstable.python39Packages.optuna
+        # scikit-learn jax objax optax flax transformers tokenizers fasttext numpy scipy sympy matplotlib pandas scikitimage statsmodels scikits-odes traittypes xarray
+        # unstable.python39Packages.optuna
         # jaxlib
         # (jaxlib.override {cudaSupport = true;}) # Same as jaxlibWithCuda
         # (jaxlib.override {cudaSupport = true; cudaPackages = cudaPackages_11_6;})
         # (numba.override {cudaSupport = true; cudaPackages = cudaPackages_11_6;})
         # (cupy.override {cudaPackages = cudaPackages_11_6;})
         # (tensorflow.override {cudaSupport = true; cudaPackages = cudaPackages_11_6;})
-        spacy
-        pytesseract
-        duckdb
-        duckdb-engine
-        jaxlibWithCuda
-        numbaWithCuda
+        # spacy
+        # pytesseract
+        # duckdb
+        # duckdb-engine
+        # jaxlibWithCuda
+        # numbaWithCuda
         # Scraping Tools
         # selenium
         # beautifulsoup4
@@ -745,31 +750,31 @@ in
         # networkx
         # faker
         # Misc
-        pip
+        # pip
         # pyside2
         # pyside2-tools
         # shiboken2
-        virtualenv
-        virtualenvwrapper
+        # virtualenv
+        # virtualenvwrapper
         # pillow
-        virtual-display
-        EasyProcess
-        pdftotext
+        # virtual-display
+        # EasyProcess
+        # pdftotext
         # Web-Dev Tools
         # fastapi sqlalchemy sqlalchemy-utils sqlalchemy-migrate sqlalchemy-jsonfield sqlalchemy-i18n sqlalchemy-citext alembic ColanderAlchemy
         # Game Dev Tools
         # pybullet pygame pyglet
         # General tools
-        pipx
-        sh
+        # pipx
+        # sh
         # Testing tools
-        pytest
-        pytest-benchmark
-        loguru
-      ];
-      python-with-my-packages = python39.withPackages my-python-packages;
-    in
-      python-with-my-packages)
+        # pytest
+        # pytest-benchmark
+        # loguru
+      # ];
+      # python-with-my-packages = python39.withPackages my-python-packages;
+    # in
+      # python-with-my-packages)
 
     # (let 
     #   my-python2-packages = python2-packages: with python2-packages; [ 
