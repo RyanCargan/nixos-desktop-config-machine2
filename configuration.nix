@@ -71,6 +71,7 @@ in
          "audio" "video" "networkmanager"
          "vglusers"
          "lxd"
+         "docker"
        ];
      group = "users";
      home = "/home/ryan";
@@ -511,6 +512,7 @@ in
     xorg.xmessage
     xorg.xev
     xorg.xmodmap
+    xorg.xhost
 
     # Steam tools
     protontricks
@@ -706,6 +708,7 @@ in
     jbang
 
     # Python 3
+    python311
     #python39.withPackages (p: with p; [
     #  duckdb
     #])
