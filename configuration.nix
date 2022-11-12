@@ -518,9 +518,9 @@ in
 
     # SDKs
     #cudatoolkit_11_2
-    # cudaPackages_11_2.cudatoolkit
+    cudaPackages_11_6.cudatoolkit
     #cudnn_cudatoolkit_11_2
-    # cudaPackages_11_2.cudnn
+    cudaPackages_11_6.cudnn
     #cudnn_cudatoolkit_11_2 # NVIDIA CUDA Deep Neural Network library (CUDA 11.2 + cuDNN 8.1.1 for TensorFlow 2.7.0 compat)
     git-lfs # Git extension for versioning large files
     gcc # GNU Compiler Collection, version 10.3.0 (wrapper script)
