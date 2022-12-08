@@ -125,7 +125,13 @@ in
   programs.nm-applet.enable = true;
   # programs.light.enable = true;
   programs.steam.enable = true;
-  
+
+  # Hosts
+  networking.extraHosts =
+  ''
+    127.0.0.1 codinghermit.net
+  '';
+
   # programs.volctl.enable = true; # Invalid
   # networking.networkmanager.wifi.backend = "iwd";
   # networking.networkmanager.enable = true;
@@ -459,7 +465,7 @@ in
     unstable.deno
     unstable.flyctl
     # go_1_17
-    go_1_18
+    # go_1_18
     #unstable.go_1_18
     sass
     ungoogled-chromium
@@ -883,6 +889,10 @@ in
     nodePackages.yarn
     nodePackages.node-gyp
     nodePackages.node-gyp-build
+
+    # PHP
+    php81
+    php81Packages.composer
 
     # VS Code
     vscode-fhs
