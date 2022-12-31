@@ -591,6 +591,7 @@ in
     okular
     konsole
     guake
+    tilda
     # picom
     gnome.zenity
     # xpra # Buggy
