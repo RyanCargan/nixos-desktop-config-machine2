@@ -49,7 +49,7 @@ in
   };
 
   # Storage optimization.
-  nix.autoOptimiseStore = true;
+  nix.settings.auto-optimise-store = true;
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
@@ -89,7 +89,7 @@ in
   };
 
   # Comm utils
-  services.teamviewer.enable = false;
+  # services.teamviewer.enable = false;
 
   # Enable virtualization.
   virtualisation.libvirtd.enable = true;
@@ -679,11 +679,11 @@ in
     jmeter
 
     # GIS utils
-    qgis
+    # qgis
 
     # KDE utils
     libsForQt5.ark # Archive manager
-    calligra # Office stuff
+    # calligra # Office stuff
 
     # Office software
     beancount
