@@ -19,6 +19,7 @@ in
     # package = pkgs.nix_2_4; # Potential attributes are nix_2_x nixFlakes nixUnstable
     extraOptions = ''
       experimental-features = nix-command flakes
+      keep-outputs = true
       keep-derivations = true
     '';
     registry.nixpkgs.flake = inputs.nixpkgs;
@@ -60,7 +61,7 @@ in
   # networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
-  # Set user.
+  # Set users.
    users.users.ryan = {
      createHome = true;
      isNormalUser = true;
@@ -76,7 +77,21 @@ in
      home = "/home/ryan";
      uid = 1000;
    };
-  # "lxd"
+   users.users.rishindu = {
+     createHome = true;
+     isNormalUser = true;
+     extraGroups =
+       [
+         "wheel" "libvirtd" "qemu-libvirtd"
+         "audio" "video" "networkmanager"
+         "vglusers"
+         "lxd"
+         "docker"
+       ];
+     group = "users";
+     home = "/home/rishindu";
+     uid = 1001;
+   };
 
   # Set your time zone.
   time.timeZone = "Asia/Colombo";
