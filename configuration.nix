@@ -378,13 +378,13 @@ in
     source-code-pro
   ];
 
-  environment.pathsToLink = [
-    "/share/nix-direnv"
-  ];
+  # environment.pathsToLink = [
+  #  "/share/nix-direnv"
+  # ];
 
-  environment.variables = {
-    JAVA_HOME = "/nix/store/5j8rfb9qhiwlg73gskbndfwbr42dbk8j-adoptopenjdk-hotspot-bin-16.0.2"; # nix-store -q --outputs $(which java)
-  };
+  # environment.variables = {
+  #  JAVA_HOME = "/nix/store/5j8rfb9qhiwlg73gskbndfwbr42dbk8j-adoptopenjdk-hotspot-bin-16.0.2"; # nix-store -q --outputs $(which java)
+  # };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
