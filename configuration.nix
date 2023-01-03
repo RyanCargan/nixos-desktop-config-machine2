@@ -478,9 +478,7 @@ in
     # Web Dev
     unstable.deno
     unstable.flyctl
-    # go_1_17
-    # go_1_18
-    #unstable.go_1_18
+    go
     sass
     ungoogled-chromium
     # postman
