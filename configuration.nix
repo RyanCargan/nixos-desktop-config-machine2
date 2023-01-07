@@ -660,6 +660,7 @@ in
     gnupg
     xfsprogs
     parted
+    input-remapper
 
     # Productivity tools
     # pomotroid # Electron dep seems broken
