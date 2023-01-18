@@ -702,6 +702,7 @@ in
     # Office software
     beancount
     fava
+    fontforge
 
     # Media players
     vlc # Video
@@ -728,12 +729,13 @@ in
     jbang
 
     # Python 3
-    python311
-    #python39.withPackages (p: with p; [
-    #  duckdb
+    #python311
+    #python311.withPackages (p: with p; [
+      #fonttools
     #])
-    # (let
-      # my-python-packages = python-packages: with python-packages; [
+    (let
+      my-python-packages = python-packages: with python-packages; [
+        fonttools
         # requests
         # psycopg2
         # tensorflowWithCuda
@@ -794,10 +796,10 @@ in
         # pytest
         # pytest-benchmark
         # loguru
-      # ];
-      # python-with-my-packages = python39.withPackages my-python-packages;
-    # in
-      # python-with-my-packages)
+      ];
+      python-with-my-packages = python311.withPackages my-python-packages;
+    in
+      python-with-my-packages)
 
     # (let 
     #   my-python2-packages = python2-packages: with python2-packages; [ 
