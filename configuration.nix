@@ -390,6 +390,7 @@ in
 
   fonts.fonts = with pkgs; [
     source-code-pro
+    liberation_ttf
   ];
 
   # environment.pathsToLink = [
