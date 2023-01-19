@@ -392,6 +392,7 @@ in
     source-code-pro
     liberation_ttf
   ];
+  fonts.fontDir.enable = true;
 
   # environment.pathsToLink = [
   #  "/share/nix-direnv"
