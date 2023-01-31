@@ -463,7 +463,12 @@ in
     # Security
     clamav
 
+    # Sys utils
+    inxi
+
     # Comm utils
+    gnome.cheese
+    teams
     # zoom-us
     anydesk
     torsocks
