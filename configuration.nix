@@ -541,6 +541,7 @@ in
 
     # Steam tools
     protontricks
+    gamemode
 
     # Programming utils
     bintools-unwrapped # Tools for manipulating binaries (linker, assembler, etc.)
