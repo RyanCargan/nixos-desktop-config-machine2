@@ -434,6 +434,7 @@ in
     # Audio utils
     reaper
     sonic-pi
+    easyeffects
 
     # Haskell
     # stack
