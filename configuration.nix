@@ -254,11 +254,12 @@ in
         "link.max-buffers" = 16;
         "log.level" = 2;
         "default.clock.rate" = 48000;
-        "default.clock.quantum" = 32;
-        "default.clock.min-quantum" = 32;
-        "default.clock.max-quantum" = 32;
+        "default.clock.quantum" = 128;
+        "default.clock.min-quantum" = 128;
+        "default.clock.max-quantum" = 128;
         "core.daemon" = true;
         "core.name" = "pipewire-0";
+        "session.suspend-timeout-seconds" = 0;
       };
       "context.modules" = [
         {
