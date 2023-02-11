@@ -649,7 +649,7 @@ in
     xfce.tumbler
     polkit_gnome
     pavucontrol
-    plasma-pa
+    # plasma-pa
     dmenu
     feh
     tmux
