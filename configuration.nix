@@ -541,6 +541,9 @@ in
     vale
     obsidian
 
+    # Rec utils
+    simplescreenrecorder
+
     # Web Dev
     unstable.deno
     unstable.flyctl
