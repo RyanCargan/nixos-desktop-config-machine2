@@ -466,6 +466,16 @@ in
   environment.systemPackages = with pkgs; [
     vim wget firefox kate httrack silver-searcher btop ccache fd ripgrep ripgrep-all git docker yt-dlp obs-studio gron go-org groff direnv elinks fbida texmacs ghostwriter ffmpeg paprefs gparted unetbootin audacity emscripten wasmer nvidia-docker pyspread inkscape neovim calibre root sageWithDoc nyxt nomacs maim yacreader tigervnc aria ghostscript nix-du zgrviewer graphviz google-chrome tor-browser-bundle-bin
 
+
+    # Virtualization
+    (pkgs.stdenv.mkDerivation {
+      name = "virtiofsd-link";
+      buildCommand = ''
+        mkdir -p $out/bin
+        ln -s ${pkgs.qemu}/libexec/virtiofsd $out/bin/
+      '';
+    })
+
     # Package packs
     # RStudio-with-my-packages
 
