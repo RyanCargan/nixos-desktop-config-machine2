@@ -475,6 +475,7 @@ in
         ln -s ${pkgs.qemu}/libexec/virtiofsd $out/bin/
       '';
     })
+    remmina
 
     # Package packs
     # RStudio-with-my-packages
@@ -617,6 +618,7 @@ in
 
     # Programming utils
     bintools-unwrapped # Tools for manipulating binaries (linker, assembler, etc.)
+    colordiff
 
     # SDKs
     #cudatoolkit_11_2
