@@ -615,6 +615,7 @@ in
     # Steam tools
     protontricks
     gamemode
+    mangohud
 
     # Programming utils
     bintools-unwrapped # Tools for manipulating binaries (linker, assembler, etc.)
