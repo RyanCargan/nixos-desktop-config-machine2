@@ -139,6 +139,8 @@ in
   programs.nm-applet.enable = true;
   # programs.light.enable = true;
   programs.steam.enable = true;
+  services.logmein-hamachi.enable = true;
+  programs.haguichi.enable = true;
 
   # Hosts
   networking.extraHosts =
@@ -616,6 +618,8 @@ in
     protontricks
     gamemode
     mangohud
+    # logmein-hamachi
+    # haguichi
 
     # Programming utils
     bintools-unwrapped # Tools for manipulating binaries (linker, assembler, etc.)
