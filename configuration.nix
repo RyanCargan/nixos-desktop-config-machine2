@@ -616,6 +616,7 @@ in
 
     # Steam tools
     protontricks
+    gamescope
     gamemode
     mangohud
     # logmein-hamachi
