@@ -989,7 +989,7 @@ in
     octave-with-my-packages)
 
     # Node
-    nodejs
+    # nodejs
     # nodejs-16_x
     # nodePackages.pnpm
     # nodePackages.yarn
