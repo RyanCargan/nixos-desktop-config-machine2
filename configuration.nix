@@ -989,11 +989,12 @@ in
     octave-with-my-packages)
 
     # Node
-    nodejs-16_x
-    nodePackages.pnpm
-    nodePackages.yarn
-    nodePackages.node-gyp
-    nodePackages.node-gyp-build
+    nodejs
+    # nodejs-16_x
+    # nodePackages.pnpm
+    # nodePackages.yarn
+    # nodePackages.node-gyp
+    # nodePackages.node-gyp-build
 
     # PHP
     php81
