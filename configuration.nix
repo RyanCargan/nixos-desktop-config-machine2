@@ -574,6 +574,7 @@ in
     # Android Dev
     # android-studio
     wmname # Java app GUI issue fix
+    android-studio
     android-tools
     watchman
 
@@ -812,10 +813,10 @@ in
     jmtpfs
 
     # JVM
-    # adoptopenjdk-bin
-    adoptopenjdk-hotspot-bin-16
-    (sbt.override { jre = pkgs.adoptopenjdk-hotspot-bin-16; })
-    jbang
+    adoptopenjdk-bin
+    # adoptopenjdk-hotspot-bin-16
+    # (sbt.override { jre = pkgs.adoptopenjdk-hotspot-bin-16; })
+    # jbang
 
     # Python 3
     #python311
