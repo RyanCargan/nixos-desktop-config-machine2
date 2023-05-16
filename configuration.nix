@@ -647,6 +647,11 @@ in
     arrayfire
     forge
 
+    # Stable Diffusion Deps
+    gperftools
+    cudaPackages.cudatoolkit # 11.7
+    cudaPackages.cudnn_8_5_0
+
     # Source code explorer & deps
     # tomcat10 opengrok
     universal-ctags
