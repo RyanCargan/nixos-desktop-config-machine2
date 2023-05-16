@@ -462,6 +462,16 @@ in
   #  JAVA_HOME = "/nix/store/5j8rfb9qhiwlg73gskbndfwbr42dbk8j-adoptopenjdk-hotspot-bin-16.0.2"; # nix-store -q --outputs $(which java)
   # };
 
+  #security.wrappers = {
+  #  nethogs = {
+  #    # setuid = true;
+  #    owner = "root";
+  #    group = "root";
+  #    capabilities = "cap_net_admin+cap_net_raw";
+  #    source = "${pkgs.nethogs}/bin/nethogs";
+  #  };
+  #};
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
@@ -728,6 +738,7 @@ in
     desktop-file-utils # Command line utilities for working with .desktop files
     xdg-utils # A set of command line tools that assist applications with a variety of desktop integration tasks
     nethogs # A small 'net top' tool, grouping bandwidth by process
+    # iftop
     file # A program that shows the type of files
     grub2_efi # Bootloader (not activated)
     exfatprogs # GParted exFAT support
