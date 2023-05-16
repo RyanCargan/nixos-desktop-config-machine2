@@ -659,8 +659,8 @@ in
 
     # Stable Diffusion Deps
     gperftools
-    cudaPackages.cudatoolkit # 11.7
-    cudaPackages.cudnn_8_5_0
+    # cudaPackages.cudatoolkit # 11.7
+    # cudaPackages.cudnn_8_5_0
 
     # Source code explorer & deps
     # tomcat10 opengrok
@@ -842,6 +842,7 @@ in
     (let
       my-python-packages = python-packages: with python-packages; [
         fonttools
+        # conda
         # requests
         # psycopg2
         # tensorflowWithCuda
@@ -939,7 +940,7 @@ in
     libtorch-bin
 
     # Conda
-    conda
+    # conda
 
     # Rust
     rustup
