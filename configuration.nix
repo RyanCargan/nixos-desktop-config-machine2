@@ -940,7 +940,7 @@ in
     libtorch-bin
 
     # Conda
-    # conda
+    conda
 
     # Rust
     rustup
