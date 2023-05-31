@@ -476,7 +476,7 @@ in
   # $ nix search wget
   # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   environment.systemPackages = with pkgs; [
-    vim wget firefox kate httrack silver-searcher btop ccache fd ripgrep ripgrep-all git docker yt-dlp obs-studio gron go-org groff direnv elinks fbida texmacs ghostwriter ffmpeg paprefs gparted unetbootin audacity emscripten wasmer nvidia-docker pyspread inkscape neovim calibre root sageWithDoc nyxt nomacs maim yacreader tigervnc aria ghostscript nix-du zgrviewer graphviz google-chrome tor-browser-bundle-bin
+    vim wget firefox kate httrack silver-searcher btop ccache fzf fd ripgrep ripgrep-all git docker yt-dlp obs-studio gron go-org groff direnv elinks fbida texmacs ghostwriter ffmpeg paprefs gparted unetbootin audacity emscripten wasmer nvidia-docker pyspread inkscape neovim calibre root sageWithDoc nyxt nomacs maim yacreader tigervnc aria ghostscript nix-du zgrviewer graphviz google-chrome tor-browser-bundle-bin
 
 
     # Virtualization
