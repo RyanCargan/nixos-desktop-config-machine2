@@ -166,7 +166,7 @@ in
   # Enable the OpenSSH daemon.
   # programs.ssh.setXAuthLocation = true;
   services.openssh.enable = true;
-  services.openssh.forwardX11 = true;
+  services.openssh.settings.X11Forwarding = true;
   # services.openssh.startWhenNeeded = true;
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ 631 5901 80 443 ];
@@ -918,17 +918,17 @@ in
     # python2-with-my-packages)
 
     # Haskell
-    (let
-      my-haskell-packages = haskellPackages: with haskellPackages; [
-                      # libraries
-                      arrows async cgi criterion
-                      # tools
-                      stack haskintex cabal-install hlint
-                    ];
+    #(let
+    #  my-haskell-packages = haskellPackages: with haskellPackages; [
+    #                  # libraries
+    #                  arrows async criterion
+    #                  # tools
+    #                  stack haskintex cabal-install hlint
+    #                ];
     #                 haskell-with-my-packages = unstable.haskell.packages.ghc941.ghcWithPackages my-haskell-packages;
-                     haskell-with-my-packages = haskell.packages.ghc902.ghcWithHoogle my-haskell-packages; # unstable.haskell also works
-    in
-    haskell-with-my-packages)
+    #                 haskell-with-my-packages = haskell.packages.ghc902.ghcWithHoogle my-haskell-packages; # unstable.haskell also works
+    #in
+    #haskell-with-my-packages)
 
     # Containers
     kube3d
