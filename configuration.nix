@@ -625,6 +625,14 @@ in
     xorg.xmodmap
     xorg.xhost
 
+    # Xorg gpu.js deps
+    xorg.libX11
+    xorg.libXi
+    xorg.libXext
+
+    # NixOS tools
+    nix-index
+
     # Steam tools
     protontricks
     gamescope
