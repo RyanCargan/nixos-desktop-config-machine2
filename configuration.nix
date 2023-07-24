@@ -943,6 +943,10 @@ in
     kubectl
     kubernetes-helm
 
+    # Misc Tools
+    graalvm-ce
+    scribus
+
     # ML Tools
     fasttext
     libtorch-bin
