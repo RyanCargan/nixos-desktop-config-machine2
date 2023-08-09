@@ -840,6 +840,7 @@ in
     jmtpfs
 
     # JVM
+    unstable.jdk20_headless
     # adoptopenjdk-bin
     # adoptopenjdk-hotspot-bin-16
     # (sbt.override { jre = pkgs.adoptopenjdk-hotspot-bin-16; })
@@ -947,7 +948,7 @@ in
     kubernetes-helm
 
     # Misc Tools
-    graalvm-ce
+    # graalvm-ce
     scribus
 
     # ML Tools
