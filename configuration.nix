@@ -619,6 +619,9 @@ in
     xorg.xdpyinfo
     xclip
 
+    # AWS tools
+    awscli2
+
     # Xorg tools
     xorg.xmessage
     xorg.xev
@@ -837,7 +840,7 @@ in
     jmtpfs
 
     # JVM
-    adoptopenjdk-bin
+    # adoptopenjdk-bin
     # adoptopenjdk-hotspot-bin-16
     # (sbt.override { jre = pkgs.adoptopenjdk-hotspot-bin-16; })
     # jbang
