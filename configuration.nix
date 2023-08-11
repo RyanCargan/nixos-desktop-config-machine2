@@ -117,6 +117,7 @@ in
 
   # Allow proprietary packages
   nixpkgs.config.allowUnfree = true; # Had to export bash env var for flakes since this didn't work
+  nixpkgs.config.allowUnfreePredicate = (pkg: true);
 #   inputs.release2105.config.allowUnfree = true;
 
   # The global useDHCP flag is deprecated, therefore explicitly set to false here.
