@@ -648,6 +648,7 @@ in
     # Programming utils
     bintools-unwrapped # Tools for manipulating binaries (linker, assembler, etc.)
     colordiff
+    cpulimit
 
     # SDKs
     #cudatoolkit_11_2
