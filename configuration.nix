@@ -567,6 +567,7 @@ in
 
     # Rec utils
     simplescreenrecorder
+    peek
 
     # Web Dev
     unstable.deno
