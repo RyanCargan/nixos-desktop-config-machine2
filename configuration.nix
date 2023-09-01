@@ -615,6 +615,7 @@ in
     # Virtualisation
     libguestfs
     virt-manager
+    virtiofsd
     vagrant
     # unstable.lxd
     # x11docker
