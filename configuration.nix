@@ -592,6 +592,7 @@ in
 
     #Sys Dev
     nixos-option
+    nixpkgs-fmt
 
     # Data analysis
     pspp
