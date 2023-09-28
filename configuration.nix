@@ -1039,7 +1039,7 @@ in
     php81Packages.composer
 
     # VS Code
-    vscode-fhs
+    unstable.vscode-fhs
 
     # (vscode-with-extensions.override {
     #   # When the extension is already available in the default extensions set.
