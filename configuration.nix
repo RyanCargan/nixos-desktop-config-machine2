@@ -536,7 +536,7 @@ in
     graphviz
     google-chrome
     tor-browser-bundle-bin
-
+    busybox
 
     # Virtualization
     (pkgs.stdenv.mkDerivation {
@@ -563,6 +563,7 @@ in
 
     # Educational software
     anki-bin
+    d2
 
     # Audio & video comms
     # droidcam
