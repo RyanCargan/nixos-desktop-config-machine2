@@ -28,6 +28,18 @@ let
       readr
       readxl
       randomForest
+      mice
+      FactoMineR
+      rstudioapi
+      here
+      gt
+      kableExtra
+      data_table
+      mltools
+      fastDummies
+      gridExtra
+      corrplot
+      plyr
     ];
   };
 
@@ -486,6 +498,9 @@ in
     # Weird stuff
     eaglemode
     lagrange
+
+    # Project Management Tools
+    ganttproject-bin
 
     # Compiler tooling
     smlnj
