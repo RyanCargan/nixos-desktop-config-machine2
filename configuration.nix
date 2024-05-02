@@ -84,6 +84,9 @@ in
   # Storage optimization.
   nix.settings.auto-optimise-store = true;
 
+  # Limit CPU usage during builds
+  nix.settings.cores = 4;
+
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
