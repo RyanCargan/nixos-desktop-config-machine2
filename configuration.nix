@@ -525,6 +525,11 @@ in
     awscli2
     minio
 
+    # IaC
+    terraform
+    terraform-providers.aws
+    terraform-providers.cloudflare
+
     # Xorg tools
     xorg.xmessage
     xorg.xev
