@@ -460,8 +460,8 @@ in
     peek
 
     # Web Dev
-    unstable.deno
-    unstable.flyctl
+    deno
+    flyctl
     go
     sass
     ungoogled-chromium
@@ -520,6 +520,11 @@ in
     vagrant
     xorg.xdpyinfo
     xclip
+
+    # ML Tools
+    unstable.ollama
+    # (unstable.ollama.override { acceleration = "cuda"; })
+
 
     # AWS tools
     awscli2
