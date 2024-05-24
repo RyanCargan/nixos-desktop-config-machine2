@@ -176,7 +176,14 @@ in
 
   # Allow proprietary packages
   nixpkgs.config.allowUnfree = true; # Had to export bash env var for flakes since this didn't work
+  nixpkgs.config.cudaSupport = true;
   nixpkgs.config.allowUnfreePredicate = (pkg: true);
+
+  # unstable.config =
+  #   {
+  #     allowUnfree = true;
+  #     cudaSupport = true;
+  #   }
 
   # The global useDHCP flag is deprecated, therefore explicitly set to false here.
   # Per-interface useDHCP will be mandatory in the future, so this generated config
@@ -320,12 +327,18 @@ in
     # nix-direnv
     # (self: super: { nix-direnv = super.nix-direnv.override { enableFlakes = true; }; })
 
-    # CatBoost with CUDA support
+    # CUDA support
+    # (self: super: {
+    #   catboost = super.catboost.override {
+    #     cudaSupport = true;
+    #   };
+    # })
     (self: super: {
-      catboost = super.catboost.override {
-        cudaSupport = true;
+      nomacs = super.catboost.override {
+        cudaSupport = false;
       };
     })
+
   ];
 
   fonts.packages = with pkgs; [
@@ -768,6 +781,7 @@ in
           catboost
           networkx
           flask
+          numpy
         ];
         python-with-my-packages = python311.withPackages my-python-packages;
       in
