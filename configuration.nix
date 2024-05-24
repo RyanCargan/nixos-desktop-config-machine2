@@ -324,6 +324,20 @@ in
       });
     })
 
+    # nomacs
+    # (self: super: {
+    #   nomacs = super.nomacs.overrideAttrs (oa: rec {
+    #     buildInputs = oldAttrs.buildInputs ++ [
+    #       (pkgs.opencv4.override { cudaSupport = false; })
+    #     ];
+    #   });
+    # })
+    # (self: super: {
+    #   nomacs = super.nomacs.overrideAttrs (oldAttrs: rec {
+    #     opencv4 = opencv4WithoutCuda;
+    #   });
+    # })
+
     # nix-direnv
     # (self: super: { nix-direnv = super.nix-direnv.override { enableFlakes = true; }; })
 
@@ -333,11 +347,12 @@ in
     #     cudaSupport = true;
     #   };
     # })
-    (self: super: {
-      nomacs = super.catboost.override {
-        cudaSupport = false;
-      };
-    })
+    # (self: super: {
+    #   nomacs = super.catboost.override {
+    #     # Why would this ever even work???
+    #     cudaSupport = false;
+    #   };
+    # })
 
   ];
 
@@ -391,7 +406,7 @@ in
     root
     sageWithDoc
     nyxt
-    nomacs
+    # unstable.nomacs
     maim
     yacreader
     tigervnc
@@ -543,6 +558,7 @@ in
 
     # ML Tools
     (unstable.ollama.override { acceleration = "cuda"; })
+    cudaPackages_12_2.cudatoolkit
 
     # AWS tools
     awscli2
@@ -782,6 +798,8 @@ in
           networkx
           flask
           numpy
+          scikit-learn
+          opencv4
         ];
         python-with-my-packages = python311.withPackages my-python-packages;
       in
