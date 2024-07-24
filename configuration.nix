@@ -862,6 +862,7 @@ in
     winetricks
     playonlinux
     mednafen
+    mame
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
