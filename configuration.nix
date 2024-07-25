@@ -781,6 +781,7 @@ in
           opencv4
           jupyterlab
           nbconvert
+          pynput
         ];
         python-with-my-packages = python311.withPackages my-python-packages;
       in
