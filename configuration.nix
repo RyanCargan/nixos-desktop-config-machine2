@@ -733,6 +733,7 @@ in
     libsForQt5.ark # Archive manager
 
     # Office software
+    libreoffice-fresh
     # beancount
     # fava
     # fontforge
