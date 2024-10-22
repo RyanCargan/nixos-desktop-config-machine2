@@ -40,6 +40,7 @@ let
       gridExtra
       corrplot
       plyr
+      reshape2
     ];
   };
 
@@ -775,7 +776,7 @@ in
     jmtpfs
 
     # R
-    # RStudio-with-my-packages
+    RStudio-with-my-packages
 
     # Spreadsheet conversion
     # gnumeric
@@ -795,7 +796,7 @@ in
           # fonttools
           pyside6
           pygame
-          # matplotlib
+          matplotlib
           # pillow
           # pytesseract
           # databricks-cli
