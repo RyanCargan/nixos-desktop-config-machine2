@@ -179,6 +179,9 @@ in
   networking.interfaces.enp34s0.useDHCP = true;
   networking.interfaces.wlp3s0f0u8.useDHCP = true;
 
+  # Firewall
+  services.opensnitch.enable = true;
+
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
@@ -518,6 +521,11 @@ in
 
     # VPN
     # mullvad-vpn
+
+    # Networking tools
+    tcpdump
+    wireshark
+    opensnitch-ui
 
     # Weird stuff
     # eaglemode
