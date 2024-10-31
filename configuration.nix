@@ -163,7 +163,7 @@ in
   virtualisation.lxd.enable = false;
   virtualisation.docker = {
     enable = true;
-    enableNvidia = true;
+    # enableNvidia = true; # Deprecated
   };
   # boot.kernelModules = [ "kvm-amd" "kvm-intel" ]; # Only needed if kvm-amd/intel is not set in hardware-configuration.nix AFAIK.
 
@@ -220,6 +220,7 @@ in
     setLdLibraryPath = true;
   };
   hardware.opengl.driSupport32Bit = true;
+  hardware.nvidia-container-toolkit.enable = true;
 
   services.xserver = {
     enable = true;
@@ -895,6 +896,7 @@ in
     playonlinux
     mednafen
     mame
+    kega-fusion
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
