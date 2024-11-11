@@ -481,6 +481,10 @@ in
     simplescreenrecorder
     peek
 
+    # Video Editing
+    kdePackages.kdenlive
+    glaxnimate
+
     # Web Dev
     deno
     flyctl
