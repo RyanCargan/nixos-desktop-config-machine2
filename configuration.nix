@@ -748,6 +748,9 @@ in
     ocamlPackages.cpdf
     exiftool
 
+    # AI tools
+    # openai-whisper # Use distilled model for now
+
     # Terminals
     hyper
 
