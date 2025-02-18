@@ -390,6 +390,7 @@ in {
     tigervnc
     aria
     ghostscript
+    pdftk
     nix-du
     zgrviewer
     graphviz
