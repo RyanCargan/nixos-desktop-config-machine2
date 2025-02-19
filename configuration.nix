@@ -484,6 +484,7 @@ in {
     # Video Editing
     kdePackages.kdenlive
     glaxnimate
+    davinci-resolve
 
     # Web Dev
     deno
