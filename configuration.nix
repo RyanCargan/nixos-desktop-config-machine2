@@ -457,6 +457,7 @@ in {
     evtest
     xautomation
     woeusb-ng
+    ventoy-full
 
     # Comm utils
     cheese
