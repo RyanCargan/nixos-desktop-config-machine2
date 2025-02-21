@@ -456,6 +456,7 @@ in {
     samba
     evtest
     xautomation
+    woeusb-ng
 
     # Comm utils
     cheese
