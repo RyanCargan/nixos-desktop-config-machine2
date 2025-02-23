@@ -373,7 +373,6 @@ in {
     paprefs
     gparted
     unetbootin
-    audacity
     emscripten
     wasmer
     # nvidia-docker
@@ -442,6 +441,9 @@ in {
     reaper
     sonic-pi
     easyeffects
+    audacity
+    lmms
+    csound
 
     ## Language servers
     ccls
