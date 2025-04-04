@@ -937,7 +937,7 @@ in {
 
     # Doc utils
     # xournalpp
-    # pandoc
+    pandoc
     # vale
     # gephi
     abiword
@@ -1123,6 +1123,9 @@ in {
 
     # TLA+
     # tlaplusToolbox
+
+    # Mathematics
+    lean4
 
     # GIMP
     gimp
