@@ -1126,7 +1126,7 @@ in {
 
     # Mathematics
     # lean4
-    unstable.elan
+    # unstable.elan
 
     # GIMP
     gimp
