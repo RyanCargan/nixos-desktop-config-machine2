@@ -1125,7 +1125,8 @@ in {
     # tlaplusToolbox
 
     # Mathematics
-    lean4
+    # lean4
+    unstable.elan
 
     # GIMP
     gimp
