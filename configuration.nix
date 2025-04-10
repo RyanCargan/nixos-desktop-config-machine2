@@ -644,6 +644,7 @@ in {
     xautomation
     woeusb-ng
     ventoy-full
+    bchunk
 
     # Comm utils
     cheese
@@ -1152,6 +1153,7 @@ in {
     # Games
     # cataclysm-dda
     gzdoom
+    unstable.quakespasm
 
     # Emulation
     appimage-run
