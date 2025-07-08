@@ -572,7 +572,7 @@ in {
     git
     docker
     yt-dlp
-    obs-studio
+    (obs-studio.override { cudaSupport = true; })
     gron
     go-org
     groff
@@ -585,7 +585,9 @@ in {
 
     (ffmpeg.override {
       withJack = true;
-      withCuda = true;
+      withCuda = true; # turn on --enable-cuda
+      withNvenc = true; # turn on --enable-nvenc
+      withCuvid = true; # turn on --enable-cuvid
     })
     linuxKernel.packages.linux_6_6.v4l2loopback
     paprefs
