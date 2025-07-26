@@ -532,6 +532,9 @@ in {
     flamegraph
     hotspot
     sysprof
+    bpftrace
+    trace-cmd
+    kernelshark
 
     # Fun stuff
     duktape
