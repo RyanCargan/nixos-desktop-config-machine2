@@ -102,6 +102,8 @@ in {
 
   nix.settings.trusted-users = [ "root" "ryan" ];
 
+  nix.settings.system-features = [ "kvm" ];
+
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -110,7 +112,7 @@ in {
   boot.supportedFilesystems = [ "ntfs" ];
 
   # Enable kernel modules
-  boot.kernelModules = [ "v4l2loopback" "snd-seq" "snd-rawmidi" ];
+  boot.kernelModules = [ "v4l2loopback" "snd-seq" "snd-rawmidi" "kvm-amd" ];
 
   # Set users.
   users.users.ryan = {
@@ -119,6 +121,7 @@ in {
     extraGroups = [
       "wheel"
       "libvirtd"
+      "kvm"
       "qemu-libvirtd"
       "audio"
       "video"
@@ -183,6 +186,9 @@ in {
 
   # Enable virtualization.
   virtualisation.libvirtd.enable = true;
+  virtualisation.spiceUSBRedirection.enable = true;
+  programs.virt-manager.enable = true;
+  users.groups.libvirtd.members = [ "ryan" ];
   boot.extraModprobeConfig =
     "options kvm_amd nested=1"; # Nested virtualization (requires AMD-V).
   virtualisation.lxd.enable = false;
@@ -190,7 +196,6 @@ in {
     enable = true;
     # enableNvidia = true; # Deprecated
   };
-  # boot.kernelModules = [ "kvm-amd" "kvm-intel" ]; # Only needed if kvm-amd/intel is not set in hardware-configuration.nix AFAIK.
 
   # Allow proprietary packages
   # nixpkgs.config.cudaSupport = false;
@@ -479,6 +484,7 @@ in {
 
     # Security
     clamav
+    sparrow
 
     # Sys utils
     inxi
@@ -529,6 +535,7 @@ in {
     nodejs_20
     ruby
     filezilla
+    pnpm
 
     # Game Dev
     butler
