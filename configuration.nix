@@ -265,6 +265,10 @@ in {
     # setLdLibraryPath = true;
   };
   hardware.nvidia-container-toolkit.enable = true;
+  hardware.opentabletdriver = {
+    enable = true;
+    daemon.enable = true;
+  };
 
   services.xserver = {
     enable = true;
