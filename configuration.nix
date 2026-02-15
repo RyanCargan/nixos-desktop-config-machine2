@@ -880,6 +880,7 @@ in {
 
     # Nim
     nim
+    nimble
 
     # GIMP
     (gimp-with-plugins.override {
