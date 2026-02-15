@@ -878,6 +878,9 @@ in {
     valgrind
     gdb
 
+    # Nim
+    nim
+
     # GIMP
     (gimp-with-plugins.override {
       plugins = with gimpPlugins; [ gmic resynthesizer ];
