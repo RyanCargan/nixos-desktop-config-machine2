@@ -540,6 +540,7 @@ in {
     ruby
     filezilla
     pnpm
+    webkitgtk_4_1
 
     # Game Dev
     butler
@@ -881,6 +882,8 @@ in {
     # Nim
     nim
     nimble
+    nph
+    nimlangserver
 
     # GIMP
     (gimp-with-plugins.override {
