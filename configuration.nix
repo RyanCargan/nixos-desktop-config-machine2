@@ -114,6 +114,9 @@ in {
   # Enable kernel modules
   boot.kernelModules = [ "v4l2loopback" "snd-seq" "snd-rawmidi" "kvm-amd" ];
 
+  # Kernel params
+  boot.kernelParams = [ "mem_sleep_default=s2idle" ];
+
   # Set users.
   users.users.ryan = {
     createHome = true;
@@ -212,6 +215,7 @@ in {
         "bsl11"
         "bsd3"
         "issl"
+        "obsidian"
       ]) (if builtins.isList p.meta.license then
         p.meta.license
       else
@@ -257,7 +261,11 @@ in {
 
   # Enable NVIDIA drivers
   services.xserver.videoDrivers = [ "nvidia" ];
-  hardware.nvidia.open = false;
+  hardware.nvidia = {
+    open = false;
+    powerManagement.enable = true;
+    nvidiaSettings = true;
+  };
   hardware.graphics = {
     enable = true;
     extraPackages = with pkgs; [ libGL ];
@@ -784,6 +792,7 @@ in {
     exiftool
     djvu2pdf
     djvulibre
+    obsidian
 
     # DB utils
     dbeaver-bin # Universal SQL Client for developers, DBA and analysts. Supports MySQL, PostgreSQL, MariaDB, SQLite, and more.
@@ -845,6 +854,7 @@ in {
           python-uinput
           vpk
           pysdl2
+          uv
         ];
       python-with-my-packages = python312.withPackages my-python-packages;
     in python-with-my-packages)
@@ -856,6 +866,7 @@ in {
 
     # ML Tools
     fasttext
+    cudaPackages.cuda_nvcc
 
     # Conda
     conda
