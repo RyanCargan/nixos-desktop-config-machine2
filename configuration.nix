@@ -958,8 +958,9 @@ in {
     php81
     php81Packages.composer
 
-    # VS Code
+    # IDEs
     unstable.vscode-fhs
+    unstable.zed-editor-fhs
 
     # Games
     gzdoom
