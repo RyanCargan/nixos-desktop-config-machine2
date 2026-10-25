@@ -16,33 +16,25 @@
   programs.neovim = {
     enable = true;
 
-    # Editor settings from lua/ryan/set.lua
-    vimOptions = {
-      guicursor = "";
-      number = true;
-      relativenumber = true;
-      tabstop = 4;
-      softtabstop = 4;
-      shiftwidth = 4;
-      expandtab = true;
-      smartindent = true;
-      wrap = false;
-      swapfile = false;
-      backup = false;
-      undofile = true;
-      undodir = "/home/ryan/.vim/undodir";
-      hlsearch = false;
-      incsearch = true;
-      termguicolors = true;
-      scrolloff = 8;
-      signcolumn = "yes";
-      isfname = "@-@";
-      updatetime = 50;
-      colorcolumn = "80";
-    };
-
-    # Leader + keymaps from lua/ryan/remap.lua + init.lua autocmds
+    # All editor settings + keymaps + autocmds from lua/ryan/{set,remap,init}.lua
+    # go into extraConfig as vimscript (HM doesn't have a vimOptions attrset).
     extraConfig = ''
+      " --- Options (from lua/ryan/set.lua) ---
+      set guicursor=""
+      set number relativenumber
+      set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
+      set smartindent
+      set nowrap
+      set noswapfile nobackup
+      set undofile undodir=/home/ryan/.vim/undodir
+      set nohlsearch incsearch
+      set termguicolors
+      set scrolloff=8 signcolumn=yes
+      set isfname+=@-@
+      set updatetime=50
+      set colorcolumn=80
+
+      " --- Leader + keymaps (from lua/ryan/remap.lua + init.lua) ---
       let mapleader = " "
 
       " File explorer
@@ -81,7 +73,7 @@
       nnoremap <leader>s :%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>
 
       " Make executable
-      nnoremap <leader>x :!chmod +x %<CR><CR>
+      nnoremap <leader>x :!chmod +x %<CR>
 
       " Go error templates
       nnoremap <leader>ee oif err != nil {<CR>}<Esc>Oreturn err<Esc>
