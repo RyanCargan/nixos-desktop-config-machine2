@@ -1,26 +1,204 @@
 { config, pkgs, inputs, ... }:
 
 {
-  # Set once to current release branch; never change. Upgrading this
-  # value triggers migration logic; bump only when reading release notes
-  # and intentionally migrating config.
   home.stateVersion = "26.05";
-
-  # Your user; must match the username on the live system.
   home.username = "ryan";
-
-  # Standard Linux home directory.
   home.homeDirectory = "/home/ryan";
 
   # Auto-backup existing dotfiles on first HM activation instead of failing.
   home-manager.backupFileExtension = ".hmbak";
+
+  # ---- zsh (full migration from .zshrc) ----
+  programs.zsh = {
+    enable = true;
+
+    # History & completion
+    history = {
+      size = 10000;
+      save = 10000;
+      options = [ "inc_append_history" "share_history" "hist_ignore_dups" "hist_ignore_space" ];
+    };
+
+    # Vi mode
+    keyBindings = "vi";
+
+    # Session variables (exports)
+    sessionVariables = {
+      EDITOR = "nvim";
+      SUDO_EDITOR = "nvim";
+      ANDROID_HOME = "$HOME/Android/Sdk";
+      BROWSER = "firefox-nightly";
+      PGUSER = "admin";
+      PGDATABASE = "central";
+      UV_LINK_MODE = "clone";
+      UV_CACHE_DIR = "/run/media/ryan/nixos/.cache/uv/";
+      UV_PYTHON_PREFERENCE = "only-managed";
+      UV_CONCURRENT_DOWNLOADS = "3";
+      UV_NATIVE_TLS = "1";
+      FZF_DEFAULT_COMMAND = "fd --type f";
+      BUN_INSTALL = "$HOME/.bun";
+    };
+
+    # Path additions
+    path = [
+      "$ANDROID_HOME/emulator"
+      "$ANDROID_HOME/platform-tools"
+      "$HOME/.npm-packages/bin"
+      "$HOME/.deno/bin"
+      "$HOME/.cargo/bin"
+      "$HOME/Tools"
+      "$HOME/Tools/cabbage/bin"
+      "$HOME/.local/bin"
+      "$HOME/.opencode/bin"
+      "$BUN_INSTALL/bin"
+      "$HOME/.elan/bin"
+    ];
+
+    # Shell aliases
+    shellAliases = {
+      "man-web" = "man --html";
+      "nix-stray-roots" = "nix-store --gc --print-roots | egrep -v \"^(/nix/var|/run/\\w+-system|\\{memory)\"";
+      "set-key" = "eval `ssh-agent -s` && ssh-add ~/.ssh/id_rsa";
+      "setup-ssh" = "eval `ssh-agent -s` && ssh-add ~/.ssh/id_rsa";
+      "list-path" = "tr ':' '\\n' <<< \"$PATH\"";
+      "refresh-desktop" = "xfce4-panel -r && xfwm4 --replace &";
+      "unlock_ssh" = "ssh-add ~/.ssh/id_rsa";
+      "unlock_ssh2" = "ssh-add ~/.ssh/id_rsa2";
+      "unlock_ssh3" = "ssh-add ~/.ssh/id_rsa3";
+      "unlock_ssh4" = "ssh-add ~/.ssh/id_rsa4";
+      "lock_ssh" = "ssh-add -d ~/.ssh/id_rsa";
+      "lock_ssh2" = "ssh-add -d ~/.ssh/id_rsa2";
+      "lock_ssh3" = "ssh-add -d ~/.ssh/id_rsa3";
+      "lock_ssh4" = "ssh-add -d ~/.ssh/id_rsa4";
+      "unlock_ed25519" = "ssh-add ~/.ssh/id_ed25519";
+      "lock_ed25519" = "ssh-add -d ~/.ssh/id_ed25519";
+      "nvg" = "nvim -c 'tab Git'";
+    };
+
+    # Interactive shell init (functions, hooks, evals)
+    interactiveShellInit = ''
+      # Local secrets; never committed.
+      if [ -f "$HOME/.config/secrets/env" ]; then
+        set -a
+        . "$HOME/.config/secrets/env"
+        set +a
+      fi
+
+      # ----- SSH agent: start if not running -----
+      mkdir -p "$HOME/.ssh"
+      [ -f "$HOME/.ssh/agent-env" ] && source "$HOME/.ssh/agent-env"
+      if ! ssh-add -l &>/dev/null; then
+        echo "Starting ssh-agent..." >&2
+        eval "$(ssh-agent -s)" > /dev/null
+        ssh-agent -s > "$HOME/.ssh/agent-env"
+        source "$HOME/.ssh/agent-env"
+      fi
+
+      # yt-dlp functions
+      yt_vdq () {
+        local playlist=''
+        local items=''
+        if [[ -n $4 ]]; then
+          playlist='%(playlist_autonumber)s-'
+          items="--playlist-items $4"
+        else
+          playlist=''
+          items=''
+        fi
+        local pString="yt-dlp --add-metadata --embed-metadata --embed-chapters --all-subs --embed-subs --embed-thumbnail -o ${playlist}%(title)s-%(id)s.%(ext)s -f"
+        if [[ -n $4 ]]; then
+          ${pString} $3$2 $1 ${items}
+        elif [[ -n $3 ]]; then
+          ${pString} $3$2 $1
+        else
+          ${pString} $2 $1
+        fi
+      }
+
+      yt_vdp () {
+        local subtitle_lang="en.*,ja"
+        yt-dlp --embed-subs --sub-langs ${subtitle_lang} --write-subs -f $3 -o "%(playlist)s/%(playlist_index)s - %(title)s-%(id)s.%(ext)s" $1 -I "$2"
+      }
+
+      detect_alsa_device () {
+        pacmd load-module module-alsa-source device=hw:Loopback,1,0
+      }
+
+      capture_traffic() {
+        if [ -z "$1" ]; then
+          echo "Usage: capture_traffic <PID>"
+          return 1
+        fi
+        PID=$1
+        OUTPUT_FILE="capture_${PID}.pcap"
+        echo "Starting tcpdump for PID $PID..."
+        sudo tcpdump -i any -w "$OUTPUT_FILE" "pid $PID"
+        echo "Traffic capture started. Output saved to $OUTPUT_FILE."
+      }
+
+      retry_command() {
+        local cmd=("$@")
+        while true; do
+          "${cmd[@]}"
+          exit_code=$?
+          if [ $exit_code -eq 0 ]; then
+            break
+          else
+            echo "Command '${cmd[*]}' failed with exit code $exit_code. Retrying in 1 minute..."
+            sleep 10
+          fi
+        done
+      }
+
+      retry_sudo() {
+        local cmd=("$@")
+        refresh_sudo() {
+          while true; do
+            sudo -v
+            sleep 25
+          done
+        }
+        (
+          refresh_sudo &
+          while true; do
+            sudo -n "${cmd[@]}" < /dev/null
+            exit_code=$?
+            if [ $exit_code -eq 0 ]; then
+              pkill -P $$
+              break
+            else
+              echo "Command '${cmd[*]}' failed with exit code $exit_code. Retrying in 1 minute..."
+              sleep 10
+            fi
+          done
+        )
+      }
+
+      backup_cyberpunk () {
+        rsync -avP "/run/media/ryan/ubuntu/SteamLibrary/steamapps/compatdata/1091500/pfx/drive_c/users/steamuser/Saved Games/CD Projekt Red/Cyberpunk 2077" /run/media/ryan/ubuntu/SaveBackups/
+      }
+
+      # fzf already configured via sessionVariables
+
+      # direnv hook
+      eval "$(direnv hook zsh)"
+
+      # starship prompt
+      eval "$(starship init zsh)"
+
+      # z.lua
+      eval "$(lua ~/zsh-plugins/z.lua/z.lua --init zsh enhanced once fzf)"
+
+      # bun completions
+      [ -s "/home/ryan/.bun/_bun" ] && source "/home/ryan/.bun/_bun"
+    '';
+  };
 
   # ---- neovim (config only; lazy.nvim self-manages plugins) ----
   programs.neovim = {
     enable = true;
 
     # All editor settings + keymaps + autocmds from lua/ryan/{set,remap,init}.lua
-    # go into extraConfig as vimscript (HM doesn't have a vimOptions attrset).
     extraConfig = ''
       " --- Options (from lua/ryan/set.lua) ---
       set guicursor=""
@@ -118,8 +296,85 @@
     '';
 
     # Plugins are managed by lazy.nvim on first launch (self-managed).
-    # If you want HM to pin specific plugin versions, use extraPackages.
     # extraPackages = with pkgs.vimPlugins; [ plenary cellular-automaton ];
+  };
+
+  # ---- git (minimal; you can expand) ----
+  programs.git = {
+    enable = true;
+    userName = "Ryan Cargan";
+    userEmail = "ryan@codinghermit.net";
+    extraConfig = {
+      init.defaultBranch = "main";
+      pull.rebase = true;
+      push.autoSetupRemote = true;
+      core.editor = "nvim";
+      merge.tool = "nvimdiff";
+    };
+  };
+
+  # ---- tmux (from .config/tmux/tmux.conf) ----
+  programs.tmux = {
+    enable = true;
+    plugins = with pkgs; [
+      tmux-plugin-manager
+      # tmux-sensible, tmux-resurrect, tmux-continuum are part of tpm ecosystem
+      # but can be added via extraPackages if you want Nix-managed versions
+    ];
+    # Core options
+    shortcut = "C-b";
+    clockModeStyle = "24";
+    historyLimit = 10000;
+    baseIndex = 1;
+    paneBaseIndex = 1;
+    terminalOverrides = "xterm-256color:RGB";
+    escapeTime = 0;
+    focusEvents = true;
+    mouse = true;
+    extraConfig = ''
+      set -g @continuum-restore 'on'
+      # tpm initialization (will be handled by tpm on first run)
+    '';
+  };
+
+  # ---- starship (from .config/starship.toml) ----
+  programs.starship = {
+    enable = true;
+    settings = {
+      aws = { disabled = true };
+      # Add more modules as needed
+    };
+  };
+
+  # ---- wezterm (from .wezterm.lua) ----
+  programs.wezterm = {
+    enable = true;
+    # Wezterm config is Lua; use extraConfig to pass it through
+    extraConfig = ''
+      -- Pull in the wezterm API
+      local wezterm = require 'wezterm'
+      local config = wezterm.config_builder()
+
+      config.initial_cols = 120
+      config.initial_rows = 28
+      config.font_size = 10
+      config.color_scheme = 'AdventureTime'
+      config.window_background_opacity = 0.85
+      config.automatically_reload_config = true
+      config.enable_scroll_bar = true
+      config.colors = config.colors or {}
+      config.colors.scrollbar_thumb = '#888888'
+      wezterm.on("update-status", function(window, pane)
+        local overrides = window:get_config_overrides() or {}
+        overrides.enable_scroll_bar = not pane:is_alt_screen_active()
+        window:set_config_overrides(overrides)
+      end)
+      config.keys = config.keys or {}
+      table.insert(config.keys, { key = "Tab", mods = "CTRL", action = wezterm.action.ActivateTabRelative(1) })
+      table.insert(config.keys, { key = "Tab", mods = "SHIFT|CTRL", action = wezterm.action.ActivateTabRelative(-1) })
+      table.insert(config.keys, { key = "t", mods = "CTRL|SHIFT", action = wezterm.action.SpawnTab("CurrentPaneDomain") })
+      return config
+    '';
   };
 
   # ---- packages: formatters/tools from dev-pkgs.nix (incremental) ----
@@ -143,11 +398,25 @@
     shellcheck
     go
     soupault
+
+    # Additional from dev-pkgs.nix
+    yt-dlp
+    tcpdump
+    rsync
+    direnv
+    lua5_1
+    starship
+    z.lua
   ];
 
-  # ---- zsh (skeleton; expand with actual config from .zshrc) ----
-  programs.zsh = {
-    enable = true;
-    # Full config will be migrated from .zshrc incrementally
+  # XDG configs not covered by programs.* modules
+  xdg.configFile = {
+    "maki/init.lua".text = ''
+      -- maki config (placeholder; copy from dotfiles if needed)
+    '';
+    "sqls/config.yml".text = ''
+      # sqls config (placeholder; copy from dotfiles if needed)
+    '';
+    "luarc.json".text = builtins.readFile ./luarc.json;
   };
 }
