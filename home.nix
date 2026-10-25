@@ -12,6 +12,9 @@
   # Standard Linux home directory.
   home.homeDirectory = "/home/ryan";
 
+  # Auto-backup existing dotfiles on first HM activation instead of failing.
+  home-manager.backupFileExtension = ".hmbak";
+
   # ---- neovim (config only; lazy.nvim self-manages plugins) ----
   programs.neovim = {
     enable = true;
