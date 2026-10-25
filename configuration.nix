@@ -1,9 +1,18 @@
-{ config, pkgs, inputs, lib, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  lib,
+  ...
+}:
 
 with pkgs;
 
 {
-  imports = [ ./hardware-configuration.nix ./cachix.nix ];
+  imports = [
+    ./hardware-configuration.nix
+    ./cachix.nix
+  ];
 
   nix = {
     package = pkgs.nixVersions.stable;
@@ -25,7 +34,10 @@ with pkgs;
       trusted-public-keys = [
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       ];
-      trusted-users = [ "root" "ryan" ];
+      trusted-users = [
+        "root"
+        "ryan"
+      ];
       system-features = [ "kvm" ];
     };
   };
@@ -36,9 +48,12 @@ with pkgs;
       allowBroken = true;
       permittedInsecurePackages = [ ];
 
-      allowUnfreePredicate = p:
-        builtins.all
-          (license: license.free || builtins.elem license.shortName [
+      allowUnfreePredicate =
+        p:
+        builtins.all (
+          license:
+          license.free
+          || builtins.elem license.shortName [
             "unfreeRedistributable"
             "unfree"
             "postman"
@@ -47,8 +62,8 @@ with pkgs;
             "issl"
             "obsidian"
             "claude"
-          ])
-          (if builtins.isList p.meta.license then p.meta.license else [ p.meta.license ]);
+          ]
+        ) (if builtins.isList p.meta.license then p.meta.license else [ p.meta.license ]);
 
       packageOverrides = pkgs: {
         unstable = import inputs.unstable {
@@ -73,16 +88,33 @@ with pkgs;
             })
           ];
         });
-        st = super.st.overrideAttrs (_: { patches = [ ]; });
+        st = super.st.overrideAttrs (_: {
+          patches = [ ];
+        });
       })
     ];
+  };
+
+  # Compressed RAM-backed swap. memoryPercent is the uncompressed virtual
+  # size; at ~3:1 zstd compression, 50% of RAM as disksize consumes ~17%
+  # of physical RAM. Existing /swapfile remains as fallback.
+  zramSwap = {
+    enable = true;
+    memoryPercent = 50;
+    algorithm = "zstd";
+    priority = 5;
   };
 
   boot = {
     loader.systemd-boot.enable = true;
     loader.efi.canTouchEfiVariables = true;
     supportedFilesystems = [ "ntfs" ];
-    kernelModules = [ "v4l2loopback" "snd-seq" "snd-rawmidi" "kvm-amd" ];
+    kernelModules = [
+      "v4l2loopback"
+      "snd-seq"
+      "snd-rawmidi"
+      "kvm-amd"
+    ];
     kernelParams = [
       "mem_sleep_default=deep"
       "usbcore.autosuspend=-1"
@@ -152,7 +184,14 @@ with pkgs;
     ohMyZsh = {
       enable = true;
       theme = "robbyrussell";
-      plugins = [ "git" "sudo" "history" "dirhistory" "copyfile" "copypath" ];
+      plugins = [
+        "git"
+        "sudo"
+        "history"
+        "dirhistory"
+        "copyfile"
+        "copypath"
+      ];
     };
     shellAliases = {
       ll = "ls -l";
@@ -167,37 +206,55 @@ with pkgs;
     "/mnt/nixos-storage" = {
       device = "/dev/disk/by-uuid/9d21acb3-39de-4ed0-8f4f-0123ad151ef3";
       fsType = "xfs";
-      options = [ "defaults" "nofail" ];
+      options = [
+        "defaults"
+        "nofail"
+      ];
     };
 
     "/mnt/ubuntu-storage" = {
       device = "/dev/disk/by-uuid/8cbe52d8-cd1e-4aab-a57f-97966a9fb055";
       fsType = "ext4";
-      options = [ "defaults" "nofail" ];
+      options = [
+        "defaults"
+        "nofail"
+      ];
     };
 
     "/mnt/swap-storage" = {
       device = "/dev/disk/by-uuid/d4a5bffe-1f7b-4120-bc7e-dcced60866ce";
       fsType = "ext4";
-      options = [ "defaults" "nofail" ];
+      options = [
+        "defaults"
+        "nofail"
+      ];
     };
 
     "/run/media/ryan/nixos" = {
       device = "/mnt/nixos-storage";
       fsType = "none";
-      options = [ "bind" "nofail" ];
+      options = [
+        "bind"
+        "nofail"
+      ];
     };
 
     "/run/media/ryan/ubuntu" = {
       device = "/mnt/ubuntu-storage";
       fsType = "none";
-      options = [ "bind" "nofail" ];
+      options = [
+        "bind"
+        "nofail"
+      ];
     };
 
     "/run/media/ryan/swap" = {
       device = "/mnt/swap-storage";
       fsType = "none";
-      options = [ "bind" "nofail" ];
+      options = [
+        "bind"
+        "nofail"
+      ];
     };
   };
 
@@ -206,7 +263,10 @@ with pkgs;
 
     user.services.alsa-restore = {
       description = "Restore ALSA mixer state";
-      after = [ "pipewire.service" "wireplumber.service" ];
+      after = [
+        "pipewire.service"
+        "wireplumber.service"
+      ];
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
@@ -230,8 +290,18 @@ with pkgs;
 
   security.pam = {
     loginLimits = [
-      { domain = "ryan"; type = "soft"; item = "nofile"; value = "524288"; }
-      { domain = "ryan"; type = "hard"; item = "nofile"; value = "524288"; }
+      {
+        domain = "ryan";
+        type = "soft";
+        item = "nofile";
+        value = "524288";
+      }
+      {
+        domain = "ryan";
+        type = "hard";
+        item = "nofile";
+        value = "524288";
+      }
     ];
     services.hyprlock = { };
   };
@@ -323,14 +393,30 @@ with pkgs;
     gnome.gnome-keyring.enable = true;
     avahi.enable = true;
 
-    udev.extraRules = ''
-      KERNEL=="video*", SUBSYSTEM=="video4linux", MODE="0660", OWNER="ryan", GROUP="video"
+    udev = {
+      extraRules = ''
+        KERNEL=="video*", SUBSYSTEM=="video4linux", MODE="0660", OWNER="ryan", GROUP="video"
 
-      # Keep internal development partitions hidden from desktop automounters.
-      SUBSYSTEM=="block", ENV{ID_FS_UUID}=="9d21acb3-39de-4ed0-8f4f-0123ad151ef3", ENV{UDISKS_IGNORE}="1"
-      SUBSYSTEM=="block", ENV{ID_FS_UUID}=="8cbe52d8-cd1e-4aab-a57f-97966a9fb055", ENV{UDISKS_IGNORE}="1"
-      SUBSYSTEM=="block", ENV{ID_FS_UUID}=="d4a5bffe-1f7b-4120-bc7e-dcced60866ce", ENV{UDISKS_IGNORE}="1"
-    '';
+        # Keep internal development partitions hidden from desktop automounters.
+        SUBSYSTEM=="block", ENV{ID_FS_UUID}=="9d21acb3-39de-4ed0-8f4f-0123ad151ef3", ENV{UDISKS_IGNORE}="1"
+        SUBSYSTEM=="block", ENV{ID_FS_UUID}=="8cbe52d8-cd1e-4aab-a57f-97966a9fb055", ENV{UDISKS_IGNORE}="1"
+        SUBSYSTEM=="block", ENV{ID_FS_UUID}=="d4a5bffe-1f7b-4120-bc7e-dcced60866ce", ENV{UDISKS_IGNORE}="1"
+
+        # Force keyboard builtin for mouse so hwdb KEYBOARD_KEY_* mappings apply.
+        # Mice are tagged ID_INPUT_MOUSE, not ID_INPUT_KEY, so 60-evdev.rules
+        # skips the keyboard builtin. IMPORT builtin runs inline and applies
+        # the scancode->keycode mappings from extraHwdb above.
+        SUBSYSTEM=="input", KERNEL=="event*", ATTRS{idVendor}=="1c4f", IMPORT{builtin}="hwdb --subsystem=input --lookup-prefix=evdev:", RUN{builtin}+="keyboard"
+      '';
+
+      # Disable mouse thumb/side buttons (BTN_SIDE=90004, BTN_EXTRA=90005)
+      # at the kernel input layer. Works on X11 and Wayland with no daemon.
+      extraHwdb = ''
+        evdev:input:b0003v1C4Fp0048e0110*
+         KEYBOARD_KEY_90004=reserved
+         KEYBOARD_KEY_90005=reserved
+      '';
+    };
   };
 
   virtualisation = {
@@ -454,7 +540,8 @@ with pkgs;
     };
   };
 
-  environment.systemPackages = with pkgs;
+  environment.systemPackages =
+    with pkgs;
     let
       # Shared dev/toolchain inventory.
       #
@@ -743,7 +830,7 @@ with pkgs;
         vscode-fhs
         inputs.zed-fork.packages.${pkgs.stdenv.hostPlatform.system}.default
         inputs.claude-fork.packages.${pkgs.stdenv.hostPlatform.system}.default
-        llama-cpp-vulkan
+        unstable.llama-cpp-vulkan
       ];
     in
     lib.unique (

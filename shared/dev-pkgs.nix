@@ -1,18 +1,25 @@
-{ pkgs, lib ? pkgs.lib }:
+{
+  pkgs,
+  lib ? pkgs.lib,
+}:
 
 let
   isLinux = pkgs.stdenv.hostPlatform.isLinux;
   isX86Linux = pkgs.stdenv.hostPlatform.system == "x86_64-linux";
 
-  pythonWithTools = pkgs.python3.withPackages (p: with p; [
-    pyside6 # Qt/Python GUI bindings for small native tools and experiments.
-    pygame # Python SDL/game-loop experiments and simple media prototypes.
-    matplotlib # Plotting and quick numerical/data visualizations.
-    evdev # Python Linux input-device access for tablet/input tooling.
-    python-uinput # Python uinput bindings for virtual input-device experiments.
-    vpk # Valve Pak archive tooling for Source-engine/game asset work.
-    pysdl2 # Python SDL2 bindings for lightweight graphics/input prototypes.
-  ]);
+  pythonWithTools = pkgs.python3.withPackages (
+    p: with p; [
+      pyside6 # Qt/Python GUI bindings for small native tools and experiments.
+      pygame # Python SDL/game-loop experiments and simple media prototypes.
+      matplotlib # Plotting and quick numerical/data visualizations.
+      evdev # Python Linux input-device access for tablet/input tooling.
+      python-uinput # Python uinput bindings for virtual input-device experiments.
+      vpk # Valve Pak archive tooling for Source-engine/game asset work.
+      pysdl2 # Python SDL2 bindings for lightweight graphics/input prototypes.
+      markitdown
+      playwright # Browser automation for site testing; uses system Chrome via channel="chrome" (docs/WEB-TESTING.md).
+    ]
+  );
 in
 rec {
   tools = rec {
@@ -38,6 +45,8 @@ rec {
       tmux
       neovim
       rtk
+      go
+      soupault
     ];
 
     # Nix/flake/dev-shell tooling.
@@ -55,6 +64,9 @@ rec {
     ];
 
     # JS/web/project tooling.
+    #
+    # entr watches soupault inputs (site/, templates/, plugins/, soupault.toml)
+    # for `scripts/dev-site.zsh` — rebuilds on change, no browser auto-reload.
     web = with pkgs; [
       nodejs
       pnpm
@@ -62,6 +74,7 @@ rec {
       asar
       mkcert
       flyctl
+      entr
     ];
 
     # SQLite and small local DB tooling.
@@ -74,11 +87,14 @@ rec {
     ];
 
     # C/C++/Zig compilers.
+    #
+    # zls is NOT included: editor-only LSP with no CLI use, owned by mason
+    # (submodules/dotfiles/.config/nvim/lua/ryan/lazy/lsp.lua
+    # ensure_installed).
     cppCompilers = with pkgs; [
       clang
       gcc
       zig
-      zls
     ];
 
     # Build/link tooling.
@@ -92,11 +108,15 @@ rec {
     ];
 
     # LLVM runtime/toolchain pieces.
+    # `llvmPackages.llvm` adds llvm-config/llvm-mca and the LLVM tools;
+    # graphviz provides `dot` for the depgraph render step.
     cppLlvmRuntime = with pkgs; [
       clang-tools
       llvmPackages.compiler-rt
       llvmPackages.libcxx
       llvmPackages.lld
+      llvmPackages.llvm
+      graphviz
     ];
 
     # Static analysis/indexing/formatting.
@@ -109,13 +129,19 @@ rec {
     ];
 
     # Native debugging.
-    cppDebug = with pkgs; [
-      gdb
-      lldb
-      valgrind
-    ] ++ lib.optionals isX86Linux (with pkgs; [
-      rr
-    ]);
+    cppDebug =
+      with pkgs;
+      [
+        gdb
+        lldb
+        valgrind
+      ]
+      ++ lib.optionals isX86Linux (
+        with pkgs;
+        [
+          rr
+        ]
+      );
 
     # Parser/codegen tools.
     cppParsingCodegen = with pkgs; [
@@ -137,28 +163,37 @@ rec {
     ];
 
     # Vulkan runtime/dev tools.
-    vulkanRuntimeDev = lib.optionals isLinux (with pkgs; [
-      vulkan-headers
-      vulkan-loader
-      vulkan-tools
-      vulkan-validation-layers
-      vulkan-extension-layer
-    ]);
+    vulkanRuntimeDev = lib.optionals isLinux (
+      with pkgs;
+      [
+        vulkan-headers
+        vulkan-loader
+        vulkan-tools
+        vulkan-validation-layers
+        vulkan-extension-layer
+      ]
+    );
 
     # Shader toolchain.
-    shaderToolchain = lib.optionals isLinux (with pkgs; [
-      shader-slang
-      shaderc
-      glslang
-      spirv-cross
-      spirv-headers
-      spirv-tools
-    ]);
+    shaderToolchain = lib.optionals isLinux (
+      with pkgs;
+      [
+        shader-slang
+        shaderc
+        glslang
+        spirv-cross
+        spirv-headers
+        spirv-tools
+      ]
+    );
 
     # GPU debugging. RenderDoc is mostly relevant on x86 Linux.
-    gpuDebug = lib.optionals isX86Linux (with pkgs; [
-      renderdoc
-    ]);
+    gpuDebug = lib.optionals isX86Linux (
+      with pkgs;
+      [
+        renderdoc
+      ]
+    );
 
     # CPU profiling.
     profilingCpu = with pkgs; [
@@ -211,10 +246,7 @@ rec {
       ++ python;
 
     # Explicit graphics/game/native-app dev layer.
-    graphics =
-      vulkanRuntimeDev
-      ++ shaderToolchain
-      ++ gpuDebug;
+    graphics = vulkanRuntimeDev ++ shaderToolchain ++ gpuDebug;
 
     # Full local dev inventory.
     full =
@@ -230,6 +262,10 @@ rec {
   libs = rec {
     # Core build/runtime libraries whose dev outputs/headers/pkg-config metadata
     # are useful inside project shells.
+    #
+    # llvmPackages.libclang/llvm expose the clang Tooling headers (dev output)
+    # and libclang-cpp.so / libLLVM.so (lib output) for the testbed depgraph
+    # tool (docs/plans/depgraph-plan.md).
     core = with pkgs; [
       zlib
       openssl
@@ -240,28 +276,34 @@ rec {
 
       cppzmq
       libgccjit
+
+      llvmPackages.libclang
+      llvmPackages.llvm
     ];
 
     # Graphics/windowing/input/rendering libraries.
-    graphics = lib.optionals isLinux (with pkgs; [
-      SDL2
+    graphics = lib.optionals isLinux (
+      with pkgs;
+      [
+        SDL2
 
-      libGL
-      libxkbcommon
+        libGL
+        libxkbcommon
 
-      wayland
-      wayland-protocols
+        wayland
+        wayland-protocols
 
-      libx11
-      libxext
-      libxi
-      libxxf86vm
+        libx11
+        libxext
+        libxi
+        libxxf86vm
 
-      vulkan-headers
-      vulkan-loader
-      vulkan-validation-layers
-      vulkan-extension-layer
-    ]);
+        vulkan-headers
+        vulkan-loader
+        vulkan-validation-layers
+        vulkan-extension-layer
+      ]
+    );
 
     full = core ++ graphics;
   };
@@ -273,9 +315,7 @@ rec {
   #   dev flake     = subset / exposure shim
   #
   # So the system installs the whole shared dev inventory.
-  systemPackages =
-    tools.full
-    ++ libs.full;
+  systemPackages = tools.full ++ libs.full;
 
   # Imported by devflake/flake.nix.
   #
