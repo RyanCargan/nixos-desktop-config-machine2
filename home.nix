@@ -6,7 +6,7 @@
   home.homeDirectory = "/home/ryan";
 
   # Auto-backup existing dotfiles on first HM activation instead of failing.
-  home-manager.backupFileExtension = ".hmbak";
+  home.backupFileExtension = ".hmbak";
 
   # ---- zsh (full migration from .zshrc) ----
   programs.zsh = {
