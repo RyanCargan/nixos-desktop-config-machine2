@@ -20,7 +20,7 @@
     };
 
     # Vi mode
-    defaultKeymap = "vi";
+    defaultKeymap = "viins";
 
     # Session variables (exports)
     sessionVariables = {
