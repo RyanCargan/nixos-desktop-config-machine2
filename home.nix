@@ -13,11 +13,14 @@
     history = {
       size = 10000;
       save = 10000;
-      options = [ "inc_append_history" "share_history" "hist_ignore_dups" "hist_ignore_space" ];
+      ignoreDups = true;
+      ignoreSpace = true;
+      share = true;
+      extended = true;
     };
 
     # Vi mode
-    keyBindings = "vi";
+    defaultKeymap = "vi";
 
     # Session variables (exports)
     sessionVariables = {
@@ -37,19 +40,9 @@
     };
 
     # Path additions
-    path = [
-      "$ANDROID_HOME/emulator"
-      "$ANDROID_HOME/platform-tools"
-      "$HOME/.npm-packages/bin"
-      "$HOME/.deno/bin"
-      "$HOME/.cargo/bin"
-      "$HOME/Tools"
-      "$HOME/Tools/cabbage/bin"
-      "$HOME/.local/bin"
-      "$HOME/.opencode/bin"
-      "$BUN_INSTALL/bin"
-      "$HOME/.elan/bin"
-    ];
+    envExtra = ''
+      export PATH="$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$HOME/.npm-packages/bin:$HOME/.deno/bin:$HOME/.cargo/bin:$HOME/Tools:$HOME/Tools/cabbage/bin:$HOME/.local/bin:$HOME/.opencode/bin:$BUN_INSTALL/bin:$HOME/.elan/bin:$PATH"
+    '';
 
     # Shell aliases
     shellAliases = {
@@ -73,7 +66,7 @@
     };
 
     # Interactive shell init (functions, hooks, evals)
-    interactiveShellInit = builtins.readFile ./shell/zsh-interactive-init.sh;
+    initContent = builtins.readFile ./shell/zsh-interactive-init.sh;
   };
 
   # ---- neovim (config only; lazy.nvim self-manages plugins) ----
@@ -208,12 +201,12 @@
     clock24 = true;
     historyLimit = 10000;
     baseIndex = 1;
-    paneBaseIndex = 1;
-    terminalOverrides = "xterm-256color:RGB";
     escapeTime = 0;
     focusEvents = true;
     mouse = true;
     extraConfig = ''
+      set -g pane-base-index 1
+      set -g terminal-overrides ',xterm-256color:RGB'
       set -g @continuum-restore 'on'
       # tpm initialization (will be handled by tpm on first run)
     '';
