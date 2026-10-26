@@ -69,110 +69,18 @@
     initContent = builtins.readFile ./shell/zsh-interactive-init.sh;
   };
 
-  # ---- neovim (config only; lazy.nvim self-manages plugins) ----
-  programs.neovim = {
+  # ---- bash (fallback shell; from .bashrc/.bash_profile) ----
+  programs.bash = {
     enable = true;
-
-    # All editor settings + keymaps + autocmds from lua/ryan/{set,remap,init}.lua
-    extraConfig = ''
-      " --- Options (from lua/ryan/set.lua) ---
-      set guicursor=""
-      set number relativenumber
-      set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
-      set smartindent
-      set nowrap
-      set noswapfile nobackup
-      set undofile undodir=/home/ryan/.vim/undodir
-      set nohlsearch incsearch
-      set termguicolors
-      set scrolloff=8 signcolumn=yes
-      set isfname+=@-@
-      set updatetime=50
-      set colorcolumn=80
-
-      " --- Leader + keymaps (from lua/ryan/remap.lua + init.lua) ---
-      let mapleader = " "
-
-      " File explorer
-      nnoremap <leader>pv :Ex<CR>
-
-      " Move lines in visual mode
-      vnoremap J :m '>+1<CR>gv=gv
-      vnoremap K :m '<-2<CR>gv=gv
-
-      " Center cursor on scroll/search
-      nnoremap <C-d> <C-d>zz
-      nnoremap <C-u> <C-u>zz
-      nnoremap n nzzzv
-      nnoremap N Nzzzv
-      nnoremap <C-k> :cnext<CR>zz
-      nnoremap <C-j> :cprev<CR>zz
-      nnoremap <leader>k :lnext<CR>zz
-      nnoremap <leader>j :lprev<CR>zz
-
-      " Paste without overwriting register
-      xnoremap <leader>p "_dP
-
-      " System clipboard
-      nnoremap <leader>y "+y
-      vnoremap <leader>y "+y
-      nnoremap <leader>Y "+Y
-      nnoremap <leader>d "_d
-
-      " Esc in insert mode
-      inoremap <C-c> <Esc>
-
-      " Disable Ex mode
-      nnoremap Q <nop>
-
-      " Search/replace word under cursor
-      nnoremap <leader>s :%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>
-
-      " Make executable
-      nnoremap <leader>x :!chmod +x %<CR>
-
-      " Go error templates
-      nnoremap <leader>ee oif err != nil {<CR>}<Esc>Oreturn err<Esc>
-      nnoremap <leader>ea oassert.NoError(err, "")<Esc>F\";a
-      nnoremap <leader>ef oif err != nil {<CR>}<Esc>Olog.Fatalf("error: %s\n", err.Error())<Esc>jj
-      nnoremap <leader>el oif err != nil {<CR>}<Esc>O.logger.Error("error", "error", err)<Esc>F.;i
-
-      " Source current file
-      nnoremap <leader><leader> :so %<CR>
-
-      " LSP keymaps (set on LspAttach)
-      autocmd LspAttach * nested call s:SetupLspKeymaps()
-      function! s:SetupLspKeymaps() abort
-        nnoremap <buffer> gd <cmd>lua vim.lsp.buf.definition()<CR>
-        nnoremap <buffer> K <cmd>lua vim.lsp.buf.hover()<CR>
-        nnoremap <buffer> <leader>vws <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
-        nnoremap <buffer> <leader>vd <cmd>lua vim.diagnostic.open_float()<CR>
-        nnoremap <buffer> <leader>vca <cmd>lua vim.lsp.buf.code_action()<CR>
-        nnoremap <buffer> <leader>vrr <cmd>lua vim.lsp.buf.references()<CR>
-        nnoremap <buffer> <leader>vrn <cmd>lua vim.lsp.buf.rename()<CR>
-        inoremap <buffer> <C-h> <cmd>lua vim.lsp.buf.signature_help()<CR>
-        nnoremap <buffer> [d <cmd>lua vim.diagnostic.goto_next()<CR>
-        nnoremap <buffer> ]d <cmd>lua vim.diagnostic.goto_prev()<CR>
-      endfunction
-
-      " Yank highlight
-      autocmd TextYankPost * lua vim.highlight.on_yank({ higroup = "IncSearch", timeout = 40 })
-
-      " Trim trailing whitespace on save
-      autocmd BufWritePre * %s/\s\+$//e
-
-      " Colorscheme per filetype
-      autocmd BufEnter * if &ft == "zig" | colorscheme tokyonight-night | else | colorscheme rose-pine-moon | endif
-
-      " Netrw tweaks
-      let g:netrw_browse_split = 0
-      let g:netrw_banner = 0
-      let g:netrw_winsize = 25
-    '';
-
-    # Plugins are managed by lazy.nvim on first launch (self-managed).
-    # extraPackages = with pkgs.vimPlugins; [ plenary cellular-automaton ];
+    initExtra = builtins.readFile ./bash/bashrc;
+    profileExtra = builtins.readFile ./bash/bash_profile;
   };
+
+  # ---- neovim (config only; lazy.nvim self-manages plugins) ----
+  # Lua config files are managed via xdg.configFile below (readDir of ./nvim).
+  # extraConfig deliberately omitted: nvim prefers init.lua over HM's init.vim,
+  # so a vimscript port would be dead code.
+  programs.neovim.enable = true;
 
   # ---- git (minimal; you can expand) ----
   programs.git = {
@@ -264,12 +172,33 @@
 
   # XDG configs not covered by programs.* modules
   xdg.configFile = {
-    "maki/init.lua".text = ''
-      -- maki config (placeholder; copy from dotfiles if needed)
-    '';
-    "sqls/config.yml".text = ''
-      # sqls config (placeholder; copy from dotfiles if needed)
-    '';
+    "maki/init.lua".text = "";  # 0 bytes in dotfiles and live — declare ownership only
+    "sqls/config.yml".source = ./sqls/config.yml;
     "luarc.json".text = builtins.readFile ./luarc.json;
+
+    # Hyprland is the default session (configuration.nix); waybar its bar.
+    "hypr/hyprland.conf".source = ./hypr/hyprland.conf;
+    "waybar/config".source = ./waybar/config;
+    "waybar/style.css".source = ./waybar/style.css;
+
+    # Zed (live disk is truth; dotfiles copy stale, no sync mapping)
+    "zed/settings.json".text = builtins.readFile ./zed/settings.json;
+    "zed/keymap.json".text = builtins.readFile ./zed/keymap.json;
+
+    # Neovim lua config: every file under ./nvim except lazy-lock.json
+    # (state — lazy.nvim rewrites it on install/update).
+  } // pkgs.lib.listToAttrs (
+    map
+      (f: {
+        name = "nvim/" + pkgs.lib.removePrefix (toString ./nvim + "/") (toString f);
+        value.source = f;
+      })
+      (pkgs.lib.filesystem.listFilesRecursive ./nvim)
+  );
+
+  # LLM/ASR scripts (deployed to ~/models/ per sync-dotfiles.zsh mapping)
+  home.file = {
+    "models/asr-hold.zsh".source = ./scripts/asr-hold.zsh;
+    "models/run-llm.zsh".source = ./scripts/run-llm.zsh;
   };
 }

@@ -1,0 +1,55 @@
+{
+  "agent_servers": {
+    
+  },
+  "cli_default_open_behavior": "existing_window",
+  "git_panel": {
+    "tree_view": true
+  },
+  "node": {
+    "path": "/run/current-system/sw/bin/node",
+    "npm_path": "/run/current-system/sw/bin/npm"
+  },
+  "agent": {
+    "default_profile": "write",
+    "default_model": {
+      "effort": "low",
+      "enable_thinking": true,
+      "provider": "google",
+      "model": "gemini-3.1-flash-lite"
+    },
+    "favorite_models": [
+      {
+        "provider": "openrouter",
+        "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+        "enable_thinking": true
+      },
+      {
+        "provider": "google",
+        "model": "gemini-3.1-flash-lite",
+        "enable_thinking": true,
+        "effort": "low"
+      },
+      {
+        "provider": "openrouter",
+        "model": "inclusionai/ling-3.0-flash:free",
+        "enable_thinking": true
+      }
+    ],
+    "tool_permissions": {
+      "default": "allow"
+    },
+    "play_sound_when_agent_done": "always"
+  },
+  "language_models": {},
+  "telemetry": {
+    "metrics": false
+  },
+  "ui_font_size": 16,
+  "buffer_font_size": 16,
+  "theme": {
+    "mode": "system",
+    "light": "One Light",
+    "dark": "One Dark"
+  }
+}
