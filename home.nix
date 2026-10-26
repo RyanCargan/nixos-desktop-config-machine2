@@ -205,7 +205,7 @@
     ];
     # Core options
     shortcut = "C-b";
-    clockModeStyle = "24";
+    clock24 = true;
     historyLimit = 10000;
     baseIndex = 1;
     paneBaseIndex = 1;
