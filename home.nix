@@ -5,9 +5,6 @@
   home.username = "ryan";
   home.homeDirectory = "/home/ryan";
 
-  # Auto-backup existing dotfiles on first HM activation instead of failing.
-  home.backupFileExtension = ".hmbak";
-
   # ---- zsh (full migration from .zshrc) ----
   programs.zsh = {
     enable = true;

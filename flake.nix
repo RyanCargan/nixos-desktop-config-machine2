@@ -24,6 +24,7 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.extraSpecialArgs = { inherit inputs; };
+          home-manager.backupFileExtension = ".hmbak";
           home-manager.users.ryan = ./home.nix;
         }
       ];
