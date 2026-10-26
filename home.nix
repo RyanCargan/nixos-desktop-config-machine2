@@ -226,7 +226,7 @@
   programs.starship = {
     enable = true;
     settings = {
-      aws = { disabled = true };
+      aws = { disabled = true; };
       # Add more modules as needed
     };
   };
