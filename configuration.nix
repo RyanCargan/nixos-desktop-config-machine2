@@ -543,13 +543,296 @@ with pkgs;
   environment.systemPackages =
     with pkgs;
     let
-      # Shared dev/toolchain inventory.
-      #
-      # Policy:
-      #   system config = superset / inventory owner
-      #   dev flake     = subset / exposure shim
-      devPkgs = import ./shared/dev-pkgs.nix {
-        inherit pkgs lib;
+      isLinux = pkgs.stdenv.hostPlatform.isLinux;
+      isX86Linux = pkgs.stdenv.hostPlatform.system == "x86_64-linux";
+
+      # --- Python with dev tools (inline from dev-pkgs.nix) ---
+      pythonWithTools = pkgs.python3.withPackages (
+        p: with p; [
+          pyside6    # Qt/Python GUI bindings for small native tools and experiments.
+          pygame     # Python SDL/game-loop experiments and simple media prototypes.
+          matplotlib # Plotting and quick numerical/data visualizations.
+          evdev      # Python Linux input-device access for tablet/input tooling.
+          python-uinput # Python uinput bindings for virtual input-device experiments.
+          vpk        # Valve Pak archive tooling for Source-engine/game asset work.
+          pysdl2     # Python SDL2 bindings for lightweight graphics/input prototypes.
+          markitdown
+          playwright # Browser automation for site testing; uses system Chrome via channel="chrome" (docs/WEB-TESTING.md).
+        ]
+      );
+
+      # --- Dev tools groups (inline from dev-pkgs.nix) ---
+      devTools = rec {
+        # Small CLI/dev-shell basics.
+        shellCore = with pkgs; [
+          git
+          jq
+          fzf
+          ripgrep-all
+          lua
+          fd
+          ripgrep
+          tree
+          file
+          unzip
+          zip
+          zstd
+          ccache
+          shellcheck
+          shfmt
+          ghostty
+          wezterm
+          tmux
+          neovim
+          rtk
+          go
+          soupault
+        ];
+
+        # Nix/flake/dev-shell tooling.
+        nix = with pkgs; [
+          cachix
+          nixfmt
+          nixpkgs-fmt
+          nixos-option
+          nix-du
+          nix-prefetch-git
+          nix-index
+          nix-ld
+          nil
+          nixd
+        ];
+
+        # JS/web/project tooling.
+        web = with pkgs; [
+          nodejs
+          pnpm
+          sass
+          asar
+          mkcert
+          flyctl
+          entr
+        ];
+
+        # SQLite and small local DB tooling.
+        db = with pkgs; [
+          sqlite
+          sqlite-utils
+          sqlitebrowser
+          sqlitecpp
+          sqldiff
+        ];
+
+        # C/C++/Zig compilers.
+        cppCompilers = with pkgs; [
+          clang
+          gcc
+          zig
+        ];
+
+        # Build/link tooling.
+        cppBuildLink = with pkgs; [
+          bintools-unwrapped
+          cmake
+          gnumake
+          mold
+          ninja
+          pkg-config
+        ];
+
+        # LLVM runtime/toolchain pieces.
+        cppLlvmRuntime = with pkgs; [
+          clang-tools
+          llvmPackages.compiler-rt
+          llvmPackages.libcxx
+          llvmPackages.lld
+          llvmPackages.llvm
+          graphviz
+        ];
+
+        # Static analysis/indexing/formatting.
+        cppStaticAnalysis = with pkgs; [
+          ccls
+          cppcheck
+          include-what-you-use
+          universal-ctags
+          uncrustify
+        ];
+
+        # Native debugging.
+        cppDebug =
+          with pkgs;
+          [
+            gdb
+            lldb
+            valgrind
+          ]
+          ++ lib.optionals isX86Linux (
+            with pkgs;
+            [
+              rr
+            ]
+          );
+
+        # Parser/codegen tools.
+        cppParsingCodegen = with pkgs; [
+          bison
+          flex
+          tree-sitter
+        ];
+
+        # Interactive C++.
+        cppInteractive = with pkgs; [
+          cling
+        ];
+
+        # WebAssembly / browser-native tooling.
+        wasm = with pkgs; [
+          binaryen
+          wasmer
+          emscripten
+        ];
+
+        # Vulkan runtime/dev tools.
+        vulkanRuntimeDev = lib.optionals isLinux (
+          with pkgs;
+          [
+            vulkan-headers
+            vulkan-loader
+            vulkan-tools
+            vulkan-validation-layers
+            vulkan-extension-layer
+          ]
+        );
+
+        # Shader toolchain.
+        shaderToolchain = lib.optionals isLinux (
+          with pkgs;
+          [
+            shader-slang
+            shaderc
+            glslang
+            spirv-cross
+            spirv-headers
+            spirv-tools
+          ]
+        );
+
+        # GPU debugging. RenderDoc is mostly relevant on x86 Linux.
+        gpuDebug = lib.optionals isX86Linux (
+          with pkgs;
+          [
+            renderdoc
+          ]
+        );
+
+        # CPU profiling.
+        profilingCpu = with pkgs; [
+          perf
+          flamegraph
+          hotspot
+          gperftools
+        ];
+
+        # Memory profiling.
+        profilingMemory = with pkgs; [
+          heaptrack
+          kdePackages.kcachegrind
+        ];
+
+        # Kernel/system tracing.
+        tracingKernel = with pkgs; [
+          bpftrace
+          kernelshark
+          sysprof
+          trace-cmd
+        ];
+
+        # Instrumentation profiler.
+        profilingInstrumentation = with pkgs; [
+          tracy
+        ];
+
+        # Python project tooling.
+        python = with pkgs; [
+          poetry
+          uv
+          pythonWithTools
+        ];
+
+        # Mostly headless dev shell.
+        headless =
+          shellCore
+          ++ nix
+          ++ web
+          ++ db
+          ++ cppCompilers
+          ++ cppBuildLink
+          ++ cppLlvmRuntime
+          ++ cppStaticAnalysis
+          ++ cppDebug
+          ++ cppParsingCodegen
+          ++ cppInteractive
+          ++ python;
+
+        # Explicit graphics/game/native-app dev layer.
+        graphics = vulkanRuntimeDev ++ shaderToolchain ++ gpuDebug;
+
+        # Full local dev inventory.
+        full =
+          headless
+          ++ wasm
+          ++ graphics
+          ++ profilingCpu
+          ++ profilingMemory
+          ++ tracingKernel
+          ++ profilingInstrumentation;
+      };
+
+      # --- Libraries (inline from dev-pkgs.nix) ---
+      devLibs = rec {
+        # Core build/runtime libraries whose dev outputs/headers/pkg-config metadata
+        # are useful inside project shells.
+        core = with pkgs; [
+          zlib
+          openssl
+          libffi
+
+          sqlite
+          sqlitecpp
+
+          cppzmq
+          libgccjit
+
+          llvmPackages.libclang
+          llvmPackages.llvm
+        ];
+
+        # Graphics/windowing/input/rendering libraries.
+        graphics = lib.optionals isLinux (
+          with pkgs;
+          [
+            SDL2
+
+            libGL
+            libxkbcommon
+
+            wayland
+            wayland-protocols
+
+            libx11
+            libxext
+            libxi
+            libxxf86vm
+
+            vulkan-headers
+            vulkan-loader
+            vulkan-validation-layers
+            vulkan-extension-layer
+          ]
+        );
+
+        full = core ++ graphics;
       };
 
       gimpFull = gimp-with-plugins.override {
@@ -688,7 +971,6 @@ with pkgs;
       ];
 
       # X11 inspection/compat utilities.
-      # X11 dev libraries moved to shared/dev-pkgs.nix.
       pkgsX11Tools = [
         xdpyinfo
         xev
@@ -716,7 +998,6 @@ with pkgs;
       ];
 
       # Non-core web/network user tools.
-      # nodejs/pnpm/sass/mkcert/flyctl/asar moved to shared/dev-pkgs.nix.
       pkgsWebUserTools = [
         filezilla
         speedtest-cli
@@ -859,10 +1140,9 @@ with pkgs;
       ++ pkgsEmulation
       ++ pkgsIdeEditorsAgents
 
-      # Shared system/dev package inventory.
-      # This keeps the system config as the superset and lets the dev flake
-      # remain only an exposure shim.
-      ++ devPkgs.systemPackages
+      # Full dev toolchain + libraries inlined (was devPkgs.systemPackages)
+      ++ devTools.full
+      ++ devLibs.full
     );
 
   system.stateVersion = "21.11";
