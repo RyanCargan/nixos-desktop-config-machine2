@@ -188,30 +188,6 @@
     };
   };
 
-  # ---- tmux (from .config/tmux/tmux.conf) ----
-  programs.tmux = {
-    enable = true;
-    plugins = with pkgs; [
-      tmux-plugin-manager
-      # tmux-sensible, tmux-resurrect, tmux-continuum are part of tpm ecosystem
-      # but can be added via extraPackages if you want Nix-managed versions
-    ];
-    # Core options
-    shortcut = "C-b";
-    clock24 = true;
-    historyLimit = 10000;
-    baseIndex = 1;
-    escapeTime = 0;
-    focusEvents = true;
-    mouse = true;
-    extraConfig = ''
-      set -g pane-base-index 1
-      set -g terminal-overrides ',xterm-256color:RGB'
-      set -g @continuum-restore 'on'
-      # tpm initialization (will be handled by tpm on first run)
-    '';
-  };
-
   # ---- starship (from .config/starship.toml) ----
   programs.starship = {
     enable = true;
