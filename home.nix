@@ -257,7 +257,7 @@
     direnv
     lua5_1
     starship
-    z.lua
+    z-lua
   ];
 
   # XDG configs not covered by programs.* modules
