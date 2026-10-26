@@ -96,14 +96,14 @@
 
       # yt-dlp functions
       yt_vdq () {
-        local playlist=''
-        local items=''
+        local playlist='\'\''
+        local items='\'\''
         if [[ -n $4 ]]; then
           playlist='%(playlist_autonumber)s-'
           items="--playlist-items $4"
         else
-          playlist=''
-          items=''
+          playlist='\'\''
+          items='\'\''
         fi
         local pString="yt-dlp --add-metadata --embed-metadata --embed-chapters --all-subs --embed-subs --embed-thumbnail -o ${playlist}%(title)s-%(id)s.%(ext)s -f"
         if [[ -n $4 ]]; then
