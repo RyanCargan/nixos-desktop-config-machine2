@@ -177,9 +177,11 @@
   # ---- git (minimal; you can expand) ----
   programs.git = {
     enable = true;
-    userName = "Ryan Cargan";
-    userEmail = "ryan@codinghermit.net";
-    extraConfig = {
+    settings = {
+      user = {
+        name = "Ryan Cargan";
+        email = "ryan@codinghermit.net";
+      };
       init.defaultBranch = "main";
       pull.rebase = true;
       push.autoSetupRemote = true;
@@ -237,7 +239,7 @@
     prettier
     stylua
     shfmt
-    nixfmt-rfc-style
+    nixfmt
 
     # Core dev tools
     git
