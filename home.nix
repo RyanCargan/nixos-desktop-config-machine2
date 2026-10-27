@@ -72,8 +72,8 @@
   # ---- bash (fallback shell; from .bashrc/.bash_profile) ----
   programs.bash = {
     enable = true;
-    initExtra = builtins.readFile ./bash/bashrc;
-    profileExtra = builtins.readFile ./bash/bash_profile;
+    initExtra = builtins.readFile ./bash/.bashrc;
+    profileExtra = builtins.readFile ./bash/.bash_profile;
   };
 
   # ---- neovim (config only; lazy.nvim self-manages plugins) ----
