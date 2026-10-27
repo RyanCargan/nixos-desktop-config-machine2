@@ -181,10 +181,6 @@
     "waybar/config".source = ./waybar/config;
     "waybar/style.css".source = ./waybar/style.css;
 
-    # Zed (live disk is truth; dotfiles copy stale, no sync mapping)
-    "zed/settings.json".text = builtins.readFile ./zed/settings.json;
-    "zed/keymap.json".text = builtins.readFile ./zed/keymap.json;
-
     # Neovim lua config: every file under ./nvim except lazy-lock.json
     # (state — lazy.nvim rewrites it on install/update).
   } // pkgs.lib.listToAttrs (
