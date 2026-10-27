@@ -178,6 +178,7 @@
 
     # Hyprland is the default session (configuration.nix); waybar its bar.
     "hypr/hyprland.conf".source = ./hypr/hyprland.conf;
+    "hypr/hyprland.lua".source = ./hypr/hyprland.lua;
     "waybar/config".source = ./waybar/config;
     "waybar/style.css".source = ./waybar/style.css;
 
