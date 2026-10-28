@@ -1,3 +1,7 @@
+-- Buffers larger than this get no treesitter highlight (entry parse is
+-- synchronous). 0 = always highlight.
+local MAX_HIGHLIGHT_BYTES = 20 * 1024 * 1024
+
 vim.filetype.add({
     extension = {
         bend = "bend",
@@ -50,10 +54,13 @@ return {
                         return
                     end
 
-                    -- Megafiles: parsing multi-MB buffers hangs the UI.
-                    -- Skip highlight over 5 MiB (regex fallback still works).
+                    -- Megafiles: parsing multi-MB buffers blocks the UI on
+                    -- first attach (single-threaded parse). Treesitter itself
+                    -- is incremental after that, so the cap only governs
+                    -- entry; 20 MiB costs ~1-3s once, then stays interactive.
+                    -- Set to 0 to disable the check entirely.
                     local stat = vim.uv.fs_stat(vim.api.nvim_buf_get_name(0))
-                    if stat and stat.size > 5 * 1024 * 1024 then
+                    if MAX_HIGHLIGHT_BYTES > 0 and stat and stat.size > MAX_HIGHLIGHT_BYTES then
                         return
                     end
 

@@ -15,9 +15,13 @@ return {
                 json = { "biome" },
                 html = { "biome" },
                 css = { "biome" },
-                -- Biome's markdown/yaml support is still experimental
+                -- Biome's markdown/yaml support is still experimental, and
+                -- SCSS/Less aren't supported at all (formatter still open
+                -- upstream) — prettier covers those.
                 markdown = { "prettier" },
                 yaml = { "prettier" },
+                scss = { "prettier" },
+                less = { "prettier" },
                 -- C/C++
                 c = { "clang_format" },
                 cpp = { "clang_format" },
@@ -35,7 +39,11 @@ return {
                 -- FileType below) formats; lsp_format = "fallback" picks it
                 -- up since no conform formatter is registered for bend.
             },
-            format_on_save = {
+            -- Async: :w returns immediately; conform formats in background
+            -- and re-writes via :update() (loop-guarded), so buffer==disk
+            -- still holds. format_on_save would block the write up to
+            -- timeout_ms on multi-MB files.
+            format_after_save = {
                 timeout_ms = 5000,
                 lsp_format = "fallback",
             },
