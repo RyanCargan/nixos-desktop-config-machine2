@@ -140,14 +140,33 @@
 
   # ---- packages: formatters/tools from dev-pkgs.nix (incremental) ----
   home.packages = with pkgs; [
-    # Formatter stack (replaces mason-managed prettier/stylua/ruff/shfmt/nixfmt)
+    # Formatter stack — all nix-managed, no mason. Biome/clang-format/ruff/
+    # alejandra picked for speed on multi-MB files.
     ruff
     biome
     clang-tools       # includes clang-format, clang-tidy
-    prettier
+    prettier          # markdown/yaml only — biome handles the JS/web rest
     stylua
     shfmt
-    nixfmt
+    alejandra         # nix formatting (nixfmt still in system closure)
+
+    # llm-ls binary for llm.nvim (AI ghost text; no heavy language servers)
+    llm-ls
+
+    # Bend 2 formatting LSP — not in nixpkgs, built from bendlang/bend
+    # (tools/bend-fmt-lsp; pinned rev + npm deps hash)
+    (buildNpmPackage {
+      pname = "bend2-fmt-lsp";
+      version = "0.1.0";
+      src = fetchFromGitHub {
+        owner = "bendlang";
+        repo = "bend";
+        rev = "4f99f4c19e1a91fd4c3a9377363d580171d4d40c";
+        hash = "sha256-8cYvrQVUDMhnMsO9r38ylGePdCiZgpwIYQZK5dqM9Ew=";
+      };
+      sourceRoot = "source/tools/bend-fmt-lsp";
+      npmDepsHash = "sha256-bFME5ZHvaeTy8E7WnUb8zzzo3KEOX4angyeOWxPMMso=";
+    })
 
     # Core dev tools
     git

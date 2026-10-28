@@ -1,5 +1,6 @@
 vim.filetype.add({
     extension = {
+        bend = "bend",
         slang = "hlsl",
         hlsl = "hlsl",
         wat = "wat",
@@ -46,6 +47,13 @@ return {
                         return
                     end
                     if vim.bo.filetype == "wat" then
+                        return
+                    end
+
+                    -- Megafiles: parsing multi-MB buffers hangs the UI.
+                    -- Skip highlight over 5 MiB (regex fallback still works).
+                    local stat = vim.uv.fs_stat(vim.api.nvim_buf_get_name(0))
+                    if stat and stat.size > 5 * 1024 * 1024 then
                         return
                     end
 
