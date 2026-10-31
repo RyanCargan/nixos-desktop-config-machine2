@@ -202,14 +202,16 @@
     "waybar/style.css".source = ./waybar/style.css;
 
     # Neovim lua config: every file under ./nvim except lazy-lock.json
-    # (state — lazy.nvim rewrites it on install/update).
+    # (state — lazy.nvim rewrites it on install/update, so it must stay a
+    # real writable file, not a store symlink).
   } // pkgs.lib.listToAttrs (
     map
       (f: {
         name = "nvim/" + pkgs.lib.removePrefix (toString ./nvim + "/") (toString f);
         value.source = f;
       })
-      (pkgs.lib.filesystem.listFilesRecursive ./nvim)
+      (builtins.filter (f: baseNameOf (toString f) != "lazy-lock.json")
+        (pkgs.lib.filesystem.listFilesRecursive ./nvim))
   );
 
   # LLM/ASR scripts (deployed to ~/models/ per sync-dotfiles.zsh mapping)
