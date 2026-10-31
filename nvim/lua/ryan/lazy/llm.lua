@@ -12,7 +12,7 @@ return {
         config = function()
             -- Binary from nixpkgs (home.packages). Without bin_path,
             -- llm.nvim curl-downloads its own copy to stdpath("data").
-            local llm_ls = vim.exepath("llm-ls")
+            local llm_ls = vim.fn.exepath("llm-ls")
 
             require("llm").setup({
                 -- llama-server on :8080 — same endpoint the old cmp-ai used.
