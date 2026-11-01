@@ -3,8 +3,11 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     firefox.url = "github:nix-community/flake-firefox-nightly";
+    firefox.inputs.nixpkgs.follows = "nixpkgs";
     zed-fork.url = "github:RyanCargan/zed";
+    zed-fork.inputs.nixpkgs.follows = "nixpkgs";
     claude-fork.url = "github:RyanCargan/nix-claude-code";
+    claude-fork.inputs.nixpkgs.follows = "nixpkgs";
     # Pinned to the release branch matching nixos-26.05 (same nixpkgs
     # major/minor); follows drops HM's own nixpkgs pin so one rev serves all.
     home-manager.url = "github:nix-community/home-manager/release-26.05";

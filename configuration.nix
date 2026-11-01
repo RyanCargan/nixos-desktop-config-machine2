@@ -14,6 +14,8 @@ with pkgs;
     ./cachix.nix
   ];
 
+  services.speechd.enable = false;
+
   nix = {
     package = pkgs.nixVersions.stable;
     registry.nixpkgs.flake = inputs.nixpkgs;
@@ -1011,7 +1013,6 @@ with pkgs;
         exiftool
         ghostscript
         graphviz
-        kdePackages.ghostwriter
         kdePackages.kate
         kdePackages.okular
         languagetool
@@ -1021,7 +1022,6 @@ with pkgs;
         poppler-utils
         vale
         yacreader
-        zgrviewer
       ];
 
       pkgsAudioCore = [
