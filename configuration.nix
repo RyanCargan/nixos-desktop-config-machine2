@@ -1044,7 +1044,7 @@ with pkgs;
         ffmpeg-full
         mkvtoolnix
         vlc
-        inputs.unstable.packages.x86_64-linux.wl-screenrec
+        inputs.unstable.legacyPackages.x86_64-linux.wl-screenrec
       ];
 
       pkgsArtImage3d = [
