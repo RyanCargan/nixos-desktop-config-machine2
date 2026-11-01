@@ -180,6 +180,11 @@
     soupault
     hugo            # extended build; replaces the manual ~/Tools/hugo binary
 
+    # Cloudflare tooling (auth via CLOUDFLARE_API_TOKEN env var or login commands)
+    wrangler
+    cloudflare-cli
+    cloudflared
+
     # Additional from dev-pkgs.nix
     yt-dlp
     tcpdump

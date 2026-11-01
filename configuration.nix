@@ -1044,8 +1044,7 @@ with pkgs;
         ffmpeg-full
         mkvtoolnix
         vlc
-        wf-recorder
-        kooha
+        inputs.unstable.packages.x86_64-linux.wl-screenrec
       ];
 
       pkgsArtImage3d = [
