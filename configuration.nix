@@ -685,7 +685,6 @@ with pkgs;
 
         # Interactive C++.
         cppInteractive = with pkgs; [
-          cling
         ];
 
         # WebAssembly / browser-native tooling.
@@ -1043,31 +1042,25 @@ with pkgs;
 
       pkgsVideoMedia = [
         ffmpeg-full
-        glaxnimate
-        kdePackages.kdenlive
         mkvtoolnix
-        obs-studio
-        simplescreenrecorder
         vlc
+        wf-recorder
+        kooha
       ];
 
       pkgsArtImage3d = [
         blender
-        gimpFull
         inkscape
         openimageio
       ];
 
       pkgsEducationMiscGui = [
-        anki-bin
         d2
-        freeplane
         hakuneko
         input-remapper
         jmtpfs
         lightspark
         pspp
-        xmind
       ];
 
       pkgsDbServices = [
