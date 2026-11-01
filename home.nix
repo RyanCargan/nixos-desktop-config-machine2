@@ -178,6 +178,7 @@
     shellcheck
     go
     soupault
+    hugo            # extended build; replaces the manual ~/Tools/hugo binary
 
     # Additional from dev-pkgs.nix
     yt-dlp
@@ -194,6 +195,13 @@
     "maki/init.lua".text = "";  # 0 bytes in dotfiles and live — declare ownership only
     "sqls/config.yml".source = ./sqls/config.yml;
     "luarc.json".text = builtins.readFile ./luarc.json;
+
+    # OpenCode config (the opencode binary itself is self-managed by
+    # doctrine — ~/.opencode/bin with its own updater). Plugin deps
+    # (package.json/node_modules) and service.json stay unmanaged:
+    # deps are installs, service.json is runtime state.
+    "opencode/opencode.jsonc".source = ./opencode/opencode.jsonc;
+    "opencode/plugins/rtk.ts".source = ./opencode/plugins/rtk.ts;
 
     # Hyprland is the default session (configuration.nix); waybar its bar.
     "hypr/hyprland.conf".source = ./hypr/hyprland.conf;
