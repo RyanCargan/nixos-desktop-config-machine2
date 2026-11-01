@@ -1078,6 +1078,17 @@ with pkgs;
         wmname
       ];
 
+      # Minimal CUDA toolkit for Bend `gen-cu` → `.cu` compilation (~160 MB vs 2-3 GB cudatoolkit).
+      # Uncomment when you actually compile Bend CUDA output; remove after.
+      # Requires: nixpkgs.config.cudaSupport = true; allowUnfree = true.
+      # cudaMinimal = with cudaPackages; [
+      #   cuda_nvcc         # nvcc compiler driver + compiler headers; invokes host compiler (clang) for host code
+      #   cuda_cudart       # libcudart.so + cuda_runtime.h; runtime API (cudaMalloc, cudaLaunchKernel, cudaMemcpy, streams/events)
+      #   cuda_cccl         # CCCL headers (block_load.cuh, nv/target); HVM/Bend kernels use for block-level reductions/scans
+      #   cuda_nvrtc        # nvrtc.h + libnvrtc.so; runtime compilation (JIT) for SM-specific kernels at startup
+      #   # cuda_crt NOT needed: host_config.h moved to cuda_crt in CUDA 13+; we're on Pascal → CUDA 12 max
+      # ];
+
       pkgsGameLaunchCompat = [
         appimage-run
         protontricks
