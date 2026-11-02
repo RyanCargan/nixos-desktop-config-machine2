@@ -5,6 +5,10 @@
 
   "modules-left": ["ext/workspaces"],
   "modules-center": ["hyprland/window"],
+
+  "ext/workspaces": {
+    "on-click": "activate"
+  },
   "modules-right": ["pulseaudio", "network", "clock", "tray"],
 
   "pulseaudio": {
