@@ -3,15 +3,8 @@
   "position": "top",
   "height": 30,
 
-  "modules-left": ["hyprland/workspaces"],
+  "modules-left": ["ext/workspaces"],
   "modules-center": ["hyprland/window"],
-
-  "hyprland/workspaces": {
-    "on-click": "hyprctl dispatch \"hl.dsp.focus({workspace={id}})\"",
-    "persistent-workspaces": {
-      "*": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    }
-  },
   "modules-right": ["pulseaudio", "network", "clock", "tray"],
 
   "pulseaudio": {
