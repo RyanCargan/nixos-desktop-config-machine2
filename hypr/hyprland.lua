@@ -122,13 +122,13 @@ hl.config({
 
 hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + C", hl.dsp.window.close())
-hl.bind(mainMod .. " + L", hl.dsp.exit())
+hl.bind(mainMod .. " + SHIFT + L", hl.dsp.exit())
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + ALT + R", hl.dsp.exec_cmd("/home/ryan/models/asr-hold.zsh toggle"))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
-hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))
+hl.bind(mainMod .. " + T", hl.dsp.layout("togglesplit"))
 
 -- FIX #3: distinct fullscreen vs maximize (verify `mode` field name for your build)
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))
