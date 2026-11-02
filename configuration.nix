@@ -5,10 +5,7 @@
   lib,
   ...
 }:
-
-with pkgs;
-
-{
+with pkgs; {
   imports = [
     ./hardware-configuration.nix
     ./cachix.nix
@@ -40,7 +37,7 @@ with pkgs;
         "root"
         "ryan"
       ];
-      system-features = [ "kvm" ];
+      system-features = ["kvm"];
     };
   };
 
@@ -48,24 +45,27 @@ with pkgs;
     config = {
       # WARNING: global allowBroken can hide broken packages during rebuilds.
       allowBroken = true;
-      permittedInsecurePackages = [ ];
+      permittedInsecurePackages = [];
 
-      allowUnfreePredicate =
-        p:
+      allowUnfreePredicate = p:
         builtins.all (
           license:
-          license.free
-          || builtins.elem license.shortName [
-            "unfreeRedistributable"
-            "unfree"
-            "postman"
-            "bsl11"
-            "bsd3"
-            "issl"
-            "obsidian"
-            "claude"
-          ]
-        ) (if builtins.isList p.meta.license then p.meta.license else [ p.meta.license ]);
+            license.free
+            || builtins.elem license.shortName [
+              "unfreeRedistributable"
+              "unfree"
+              "postman"
+              "bsl11"
+              "bsd3"
+              "issl"
+              "obsidian"
+              "claude"
+            ]
+        ) (
+          if builtins.isList p.meta.license
+          then p.meta.license
+          else [p.meta.license]
+        );
 
       packageOverrides = pkgs: {
         unstable = import inputs.unstable {
@@ -76,7 +76,7 @@ with pkgs;
     };
 
     overlays = [
-      (self: super: { wine = super.wineWow64Packages.stableFull; })
+      (self: super: {wine = super.wineWow64Packages.stableFull;})
       (self: super: {
         dwm = super.dwm.overrideAttrs (_: {
           patches = [
@@ -91,7 +91,7 @@ with pkgs;
           ];
         });
         st = super.st.overrideAttrs (_: {
-          patches = [ ];
+          patches = [];
         });
       })
     ];
@@ -110,7 +110,7 @@ with pkgs;
   boot = {
     loader.systemd-boot.enable = true;
     loader.efi.canTouchEfiVariables = true;
-    supportedFilesystems = [ "ntfs" ];
+    supportedFilesystems = ["ntfs"];
     kernelModules = [
       "v4l2loopback"
       "snd-seq"
@@ -176,7 +176,7 @@ with pkgs;
       ];
     };
 
-    groups.libvirtd.members = [ "ryan" ];
+    groups.libvirtd.members = ["ryan"];
   };
 
   programs.zsh = {
@@ -261,7 +261,7 @@ with pkgs;
   };
 
   systemd = {
-    tmpfiles.rules = [ "d /mnt/ubuntu-storage/tmp 1777 root root -" ];
+    tmpfiles.rules = ["d /mnt/ubuntu-storage/tmp 1777 root root -"];
 
     user.services.alsa-restore = {
       description = "Restore ALSA mixer state";
@@ -274,14 +274,14 @@ with pkgs;
         RemainAfterExit = true;
         ExecStart = "${pkgs.alsa-utils}/bin/alsactl -f /etc/asound.state restore";
       };
-      wantedBy = [ "default.target" ];
+      wantedBy = ["default.target"];
     };
 
     services.nvidia-tdp = {
       description = "Set NVIDIA power limit";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "nvidia-persistenced.service" ];
-      requires = [ "nvidia-persistenced.service" ];
+      wantedBy = ["multi-user.target"];
+      after = ["nvidia-persistenced.service"];
+      requires = ["nvidia-persistenced.service"];
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
@@ -305,7 +305,7 @@ with pkgs;
         value = "524288";
       }
     ];
-    services.hyprlock = { };
+    services.hyprlock = {};
   };
 
   networking = {
@@ -314,7 +314,7 @@ with pkgs;
     interfaces.wlp3s0f0u8.useDHCP = true;
     networkmanager.enable = true;
     extraHosts = "";
-    firewall.allowedTCPPorts = [ 6443 ];
+    firewall.allowedTCPPorts = [6443];
   };
 
   services = {
@@ -341,7 +341,7 @@ with pkgs;
 
     xserver = {
       enable = true;
-      videoDrivers = [ "nvidia" ];
+      videoDrivers = ["nvidia"];
       desktopManager.xterm.enable = false;
     };
 
@@ -435,6 +435,12 @@ with pkgs;
     hyprland = {
       enable = true;
       xwayland.enable = true;
+      # 0.55.4 advertises ext-workspace-v1 but grants no `activate`
+      # capability, making waybar ext/workspaces clicks inert; 0.56+
+      # implements client-driven activation (waybar #5008/#5198).
+      package = inputs.unstable.legacyPackages.x86_64-linux.hyprland;
+      portalPackage =
+        inputs.unstable.legacyPackages.x86_64-linux.xdg-desktop-portal-hyprland;
     };
 
     dconf.enable = true;
@@ -443,7 +449,7 @@ with pkgs;
 
     nix-ld = {
       enable = true;
-      libraries = [ openssl ];
+      libraries = [openssl];
     };
 
     direnv = {
@@ -463,7 +469,7 @@ with pkgs;
 
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = [pkgs.xdg-desktop-portal-gtk];
     config.common.default = "*";
   };
 
@@ -483,7 +489,7 @@ with pkgs;
     graphics = {
       enable = true;
       enable32Bit = true;
-      extraPackages = [ libGL ];
+      extraPackages = [libGL];
     };
 
     opentabletdriver = {
@@ -538,580 +544,573 @@ with pkgs;
         "Noto Serif"
         "Noto Color Emoji"
       ];
-      emoji = [ "Noto Color Emoji" ];
+      emoji = ["Noto Color Emoji"];
     };
   };
 
-  environment.systemPackages =
-    with pkgs;
-    let
-      isLinux = pkgs.stdenv.hostPlatform.isLinux;
-      isX86Linux = pkgs.stdenv.hostPlatform.system == "x86_64-linux";
+  environment.systemPackages = with pkgs; let
+    isLinux = pkgs.stdenv.hostPlatform.isLinux;
+    isX86Linux = pkgs.stdenv.hostPlatform.system == "x86_64-linux";
 
-      # --- Python with dev tools (inline from dev-pkgs.nix) ---
-      pythonWithTools = pkgs.python3.withPackages (
-        p: with p; [
-          pyside6    # Qt/Python GUI bindings for small native tools and experiments.
-          pygame     # Python SDL/game-loop experiments and simple media prototypes.
+    # --- Python with dev tools (inline from dev-pkgs.nix) ---
+    pythonWithTools = pkgs.python3.withPackages (
+      p:
+        with p; [
+          pyside6 # Qt/Python GUI bindings for small native tools and experiments.
+          pygame # Python SDL/game-loop experiments and simple media prototypes.
           matplotlib # Plotting and quick numerical/data visualizations.
-          evdev      # Python Linux input-device access for tablet/input tooling.
+          evdev # Python Linux input-device access for tablet/input tooling.
           python-uinput # Python uinput bindings for virtual input-device experiments.
-          vpk        # Valve Pak archive tooling for Source-engine/game asset work.
-          pysdl2     # Python SDL2 bindings for lightweight graphics/input prototypes.
+          vpk # Valve Pak archive tooling for Source-engine/game asset work.
+          pysdl2 # Python SDL2 bindings for lightweight graphics/input prototypes.
           markitdown
           playwright # Browser automation for site testing; uses system Chrome via channel="chrome" (docs/WEB-TESTING.md).
         ]
+    );
+
+    # --- Dev tools groups (inline from dev-pkgs.nix) ---
+    devTools = rec {
+      # Small CLI/dev-shell basics.
+      shellCore = with pkgs; [
+        git
+        jq
+        fzf
+        ripgrep-all
+        lua
+        fd
+        ripgrep
+        tree
+        file
+        unzip
+        zip
+        zstd
+        ccache
+        shellcheck
+        shfmt
+        ghostty
+        wezterm
+        tmux
+        neovim
+        rtk
+        go
+        soupault
+      ];
+
+      # Nix/flake/dev-shell tooling.
+      nix = with pkgs; [
+        cachix
+        nixfmt
+        nixpkgs-fmt
+        nixos-option
+        nix-du
+        nix-prefetch-git
+        nix-index
+        nix-ld
+        nil
+        nixd
+      ];
+
+      # JS/web/project tooling.
+      web = with pkgs; [
+        nodejs
+        pnpm
+        sass
+        asar
+        mkcert
+        flyctl
+        entr
+      ];
+
+      # SQLite and small local DB tooling.
+      db = with pkgs; [
+        sqlite
+        sqlite-utils
+        sqlitebrowser
+        sqlitecpp
+        sqldiff
+      ];
+
+      # C/C++/Zig compilers.
+      cppCompilers = with pkgs; [
+        clang
+        gcc
+        zig
+      ];
+
+      # Build/link tooling.
+      cppBuildLink = with pkgs; [
+        bintools-unwrapped
+        cmake
+        gnumake
+        mold
+        ninja
+        pkg-config
+      ];
+
+      # LLVM runtime/toolchain pieces.
+      cppLlvmRuntime = with pkgs; [
+        clang-tools
+        llvmPackages.compiler-rt
+        llvmPackages.libcxx
+        llvmPackages.lld
+        llvmPackages.llvm
+        graphviz
+      ];
+
+      # Static analysis/indexing/formatting.
+      cppStaticAnalysis = with pkgs; [
+        ccls
+        cppcheck
+        include-what-you-use
+        universal-ctags
+        uncrustify
+      ];
+
+      # Native debugging.
+      cppDebug = with pkgs;
+        [
+          gdb
+          lldb
+          valgrind
+        ]
+        ++ lib.optionals isX86Linux (
+          with pkgs; [
+            rr
+          ]
+        );
+
+      # Parser/codegen tools.
+      cppParsingCodegen = with pkgs; [
+        bison
+        flex
+        tree-sitter
+      ];
+
+      # Interactive C++.
+      cppInteractive = with pkgs; [
+      ];
+
+      # WebAssembly / browser-native tooling.
+      wasm = with pkgs; [
+        binaryen
+        wasmer
+        emscripten
+      ];
+
+      # Vulkan runtime/dev tools.
+      vulkanRuntimeDev = lib.optionals isLinux (
+        with pkgs; [
+          vulkan-headers
+          vulkan-loader
+          vulkan-tools
+          vulkan-validation-layers
+          vulkan-extension-layer
+        ]
       );
 
-      # --- Dev tools groups (inline from dev-pkgs.nix) ---
-      devTools = rec {
-        # Small CLI/dev-shell basics.
-        shellCore = with pkgs; [
-          git
-          jq
-          fzf
-          ripgrep-all
-          lua
-          fd
-          ripgrep
-          tree
-          file
-          unzip
-          zip
-          zstd
-          ccache
-          shellcheck
-          shfmt
-          ghostty
-          wezterm
-          tmux
-          neovim
-          rtk
-          go
-          soupault
-        ];
+      # Shader toolchain.
+      shaderToolchain = lib.optionals isLinux (
+        with pkgs; [
+          shader-slang
+          shaderc
+          glslang
+          spirv-cross
+          spirv-headers
+          spirv-tools
+        ]
+      );
 
-        # Nix/flake/dev-shell tooling.
-        nix = with pkgs; [
-          cachix
-          nixfmt
-          nixpkgs-fmt
-          nixos-option
-          nix-du
-          nix-prefetch-git
-          nix-index
-          nix-ld
-          nil
-          nixd
-        ];
+      # GPU debugging. RenderDoc is mostly relevant on x86 Linux.
+      gpuDebug = lib.optionals isX86Linux (
+        with pkgs; [
+          renderdoc
+        ]
+      );
 
-        # JS/web/project tooling.
-        web = with pkgs; [
-          nodejs
-          pnpm
-          sass
-          asar
-          mkcert
-          flyctl
-          entr
-        ];
-
-        # SQLite and small local DB tooling.
-        db = with pkgs; [
-          sqlite
-          sqlite-utils
-          sqlitebrowser
-          sqlitecpp
-          sqldiff
-        ];
-
-        # C/C++/Zig compilers.
-        cppCompilers = with pkgs; [
-          clang
-          gcc
-          zig
-        ];
-
-        # Build/link tooling.
-        cppBuildLink = with pkgs; [
-          bintools-unwrapped
-          cmake
-          gnumake
-          mold
-          ninja
-          pkg-config
-        ];
-
-        # LLVM runtime/toolchain pieces.
-        cppLlvmRuntime = with pkgs; [
-          clang-tools
-          llvmPackages.compiler-rt
-          llvmPackages.libcxx
-          llvmPackages.lld
-          llvmPackages.llvm
-          graphviz
-        ];
-
-        # Static analysis/indexing/formatting.
-        cppStaticAnalysis = with pkgs; [
-          ccls
-          cppcheck
-          include-what-you-use
-          universal-ctags
-          uncrustify
-        ];
-
-        # Native debugging.
-        cppDebug =
-          with pkgs;
-          [
-            gdb
-            lldb
-            valgrind
-          ]
-          ++ lib.optionals isX86Linux (
-            with pkgs;
-            [
-              rr
-            ]
-          );
-
-        # Parser/codegen tools.
-        cppParsingCodegen = with pkgs; [
-          bison
-          flex
-          tree-sitter
-        ];
-
-        # Interactive C++.
-        cppInteractive = with pkgs; [
-        ];
-
-        # WebAssembly / browser-native tooling.
-        wasm = with pkgs; [
-          binaryen
-          wasmer
-          emscripten
-        ];
-
-        # Vulkan runtime/dev tools.
-        vulkanRuntimeDev = lib.optionals isLinux (
-          with pkgs;
-          [
-            vulkan-headers
-            vulkan-loader
-            vulkan-tools
-            vulkan-validation-layers
-            vulkan-extension-layer
-          ]
-        );
-
-        # Shader toolchain.
-        shaderToolchain = lib.optionals isLinux (
-          with pkgs;
-          [
-            shader-slang
-            shaderc
-            glslang
-            spirv-cross
-            spirv-headers
-            spirv-tools
-          ]
-        );
-
-        # GPU debugging. RenderDoc is mostly relevant on x86 Linux.
-        gpuDebug = lib.optionals isX86Linux (
-          with pkgs;
-          [
-            renderdoc
-          ]
-        );
-
-        # CPU profiling.
-        profilingCpu = with pkgs; [
-          perf
-          flamegraph
-          hotspot
-          gperftools
-        ];
-
-        # Memory profiling.
-        profilingMemory = with pkgs; [
-          heaptrack
-          kdePackages.kcachegrind
-        ];
-
-        # Kernel/system tracing.
-        tracingKernel = with pkgs; [
-          bpftrace
-          kernelshark
-          sysprof
-          trace-cmd
-        ];
-
-        # Instrumentation profiler.
-        profilingInstrumentation = with pkgs; [
-          tracy
-        ];
-
-        # Python project tooling.
-        python = with pkgs; [
-          poetry
-          uv
-          pythonWithTools
-        ];
-
-        # Mostly headless dev shell.
-        headless =
-          shellCore
-          ++ nix
-          ++ web
-          ++ db
-          ++ cppCompilers
-          ++ cppBuildLink
-          ++ cppLlvmRuntime
-          ++ cppStaticAnalysis
-          ++ cppDebug
-          ++ cppParsingCodegen
-          ++ cppInteractive
-          ++ python;
-
-        # Explicit graphics/game/native-app dev layer.
-        graphics = vulkanRuntimeDev ++ shaderToolchain ++ gpuDebug;
-
-        # Full local dev inventory.
-        full =
-          headless
-          ++ wasm
-          ++ graphics
-          ++ profilingCpu
-          ++ profilingMemory
-          ++ tracingKernel
-          ++ profilingInstrumentation;
-      };
-
-      # --- Libraries (inline from dev-pkgs.nix) ---
-      devLibs = rec {
-        # Core build/runtime libraries whose dev outputs/headers/pkg-config metadata
-        # are useful inside project shells.
-        core = with pkgs; [
-          zlib
-          openssl
-          libffi
-
-          sqlite
-          sqlitecpp
-
-          cppzmq
-          libgccjit
-
-          llvmPackages.libclang
-          llvmPackages.llvm
-        ];
-
-        # Graphics/windowing/input/rendering libraries.
-        graphics = lib.optionals isLinux (
-          with pkgs;
-          [
-            SDL2
-
-            libGL
-            libxkbcommon
-
-            wayland
-            wayland-protocols
-
-            libx11
-            libxext
-            libxi
-            libxxf86vm
-
-            vulkan-headers
-            vulkan-loader
-            vulkan-validation-layers
-            vulkan-extension-layer
-          ]
-        );
-
-        full = core ++ graphics;
-      };
-
-      gimpFull = gimp-with-plugins.override {
-        plugins = with gimpPlugins; [
-          gmic
-          resynthesizer
-        ];
-      };
-
-      # OS/rescue/shell basics that are not specifically dev-shell inventory.
-      pkgsShellCore = [
-        vim
-        wget
-        ripgrep-all
-        silver-searcher
-        btop
-        yt-dlp
-        gron
-        go-org
-        groff
-        gnupg
-        elinks
-        fbida
-        pinentry-gnome3
-        busybox
-        starship
-        erdtree
+      # CPU profiling.
+      profilingCpu = with pkgs; [
+        perf
+        flamegraph
+        hotspot
+        gperftools
       ];
 
-      pkgsFileArchiveDisk = [
-        aria2
-        bat
-        bchunk
-        colordiff
-        cpulimit
-        desktop-file-utils
-        dpkg
-        evtest
-        exfatprogs
-        findutils
-        gparted
-        gptfdisk
-        grub2_efi
-        httrack
-        hwinfo
-        ifmetric
-        inxi
-        qdirstat
-        lshw
-        lsix
-        ncdu
-        nethogs
-        newt
-        p7zip
-        parallel
-        parted
-        pciutils
-        smartmontools
-        subversion
-        trash-cli
-        unrar
-        xfsprogs
-        cdrtools
-        syslinux
-        xorriso
+      # Memory profiling.
+      profilingMemory = with pkgs; [
+        heaptrack
+        kdePackages.kcachegrind
       ];
 
-      pkgsNetworkRemote = [
-        autossh
-        awscli2
-        cloudflared
-        iproute2
-        libpcap
-        garage_2
-        mosh
-        ngrok
-        nmap
-        opensnitch-ui
-        remmina
-        samba
-        sshfs
-        tcpdump
-        tigervnc
-        tor
-        torsocks
-        wireshark
+      # Kernel/system tracing.
+      tracingKernel = with pkgs; [
+        bpftrace
+        kernelshark
+        sysprof
+        trace-cmd
       ];
 
-      pkgsCommsPresence = [
-        cheese
-        sparrow
-        telegram-desktop
+      # Instrumentation profiler.
+      profilingInstrumentation = with pkgs; [
+        tracy
       ];
 
-      pkgsWaylandHypr = [
-        grim
-        hyprlock
-        hyprpaper
-        rofi
-        slurp
-        swappy
-        waybar
-        wl-clipboard
+      # Python project tooling.
+      python = with pkgs; [
+        poetry
+        uv
+        pythonWithTools
       ];
 
-      pkgsDesktopCommon = [
-        autokey
-        conky
-        dmenu
-        dunst
-        feh
-        flameshot
-        glava
-        guake
-        ksnip
-        libnotify
-        maim
-        mlterm
-        polkit_gnome
-        st
-        tilda
-        tilix
-        ulauncher
-        virtualgl
-        volctl
-        xclip
-        xdotool
-        xterm
-        yad
-        zenity
+      # Mostly headless dev shell.
+      headless =
+        shellCore
+        ++ nix
+        ++ web
+        ++ db
+        ++ cppCompilers
+        ++ cppBuildLink
+        ++ cppLlvmRuntime
+        ++ cppStaticAnalysis
+        ++ cppDebug
+        ++ cppParsingCodegen
+        ++ cppInteractive
+        ++ python;
+
+      # Explicit graphics/game/native-app dev layer.
+      graphics = vulkanRuntimeDev ++ shaderToolchain ++ gpuDebug;
+
+      # Full local dev inventory.
+      full =
+        headless
+        ++ wasm
+        ++ graphics
+        ++ profilingCpu
+        ++ profilingMemory
+        ++ tracingKernel
+        ++ profilingInstrumentation;
+    };
+
+    # --- Libraries (inline from dev-pkgs.nix) ---
+    devLibs = rec {
+      # Core build/runtime libraries whose dev outputs/headers/pkg-config metadata
+      # are useful inside project shells.
+      core = with pkgs; [
+        zlib
+        openssl
+        libffi
+
+        sqlite
+        sqlitecpp
+
+        cppzmq
+        libgccjit
+
+        llvmPackages.libclang
+        llvmPackages.llvm
       ];
 
-      pkgsDesktopKdeQt = [
-        kdePackages.ark
-        kdePackages.kalarm
-      ];
+      # Graphics/windowing/input/rendering libraries.
+      graphics = lib.optionals isLinux (
+        with pkgs; [
+          SDL2
 
-      # X11 inspection/compat utilities.
-      pkgsX11Tools = [
-        xdpyinfo
-        xev
-        xhost
-        xmessage
-        xmodmap
-        xprop
-        xrandr
-        xwininfo
-      ];
+          libGL
+          libxkbcommon
 
-      pkgsXfceCompat = [
-        thunar
-        thunar-volman
-        tumbler
-        xfce4-screenshooter
-        xfce4-whiskermenu-plugin
-      ];
+          wayland
+          wayland-protocols
 
-      pkgsBrowsers = [
-        google-chrome
-        tor-browser
-        ungoogled-chromium
-        inputs.firefox.packages.${pkgs.stdenv.hostPlatform.system}.firefox-nightly-bin
-      ];
+          libx11
+          libxext
+          libxi
+          libxxf86vm
 
-      # Non-core web/network user tools.
-      pkgsWebUserTools = [
-        filezilla
-        speedtest-cli
-      ];
+          vulkan-headers
+          vulkan-loader
+          vulkan-validation-layers
+          vulkan-extension-layer
+        ]
+      );
 
-      pkgsDocsWriting = [
-        abiword
-        calibre
-        djvu2pdf
-        djvulibre
-        exiftool
-        ghostscript
-        graphviz
-        kdePackages.kate
-        kdePackages.okular
-        languagetool
-        ocamlPackages.cpdf
-        pandoc
-        pdftk
-        poppler-utils
-        vale
-        yacreader
-      ];
+      full = core ++ graphics;
+    };
 
-      pkgsAudioCore = [
-        alsa-tools
-        alsa-utils
-        easyeffects
-        pavucontrol
-        pipewire
-        qpwgraph
-        wireplumber
+    gimpFull = gimp-with-plugins.override {
+      plugins = with gimpPlugins; [
+        gmic
+        resynthesizer
       ];
+    };
 
-      pkgsAudioProduction = [
-        audacity
-        csound
-        reaper
-        sox
-      ];
+    # OS/rescue/shell basics that are not specifically dev-shell inventory.
+    pkgsShellCore = [
+      vim
+      wget
+      ripgrep-all
+      silver-searcher
+      btop
+      yt-dlp
+      gron
+      go-org
+      groff
+      gnupg
+      elinks
+      fbida
+      pinentry-gnome3
+      busybox
+      starship
+      erdtree
+    ];
 
-      pkgsVideoMedia = [
-        ffmpeg-full
-        mkvtoolnix
-        vlc
-        inputs.unstable.legacyPackages.x86_64-linux.wl-screenrec
-      ];
+    pkgsFileArchiveDisk = [
+      aria2
+      bat
+      bchunk
+      colordiff
+      cpulimit
+      desktop-file-utils
+      dpkg
+      evtest
+      exfatprogs
+      findutils
+      gparted
+      gptfdisk
+      grub2_efi
+      httrack
+      hwinfo
+      ifmetric
+      inxi
+      qdirstat
+      lshw
+      lsix
+      ncdu
+      nethogs
+      newt
+      p7zip
+      parallel
+      parted
+      pciutils
+      smartmontools
+      subversion
+      trash-cli
+      unrar
+      xfsprogs
+      cdrtools
+      syslinux
+      xorriso
+    ];
 
-      pkgsArtImage3d = [
-        blender
-        inkscape
-        openimageio
-      ];
+    pkgsNetworkRemote = [
+      autossh
+      awscli2
+      cloudflared
+      iproute2
+      libpcap
+      garage_2
+      mosh
+      ngrok
+      nmap
+      opensnitch-ui
+      remmina
+      samba
+      sshfs
+      tcpdump
+      tigervnc
+      tor
+      torsocks
+      wireshark
+    ];
 
-      pkgsEducationMiscGui = [
-        d2
-        hakuneko
-        input-remapper
-        jmtpfs
-        lightspark
-        pspp
-      ];
+    pkgsCommsPresence = [
+      cheese
+      sparrow
+      telegram-desktop
+    ];
 
-      pkgsDbServices = [
-        isso
-      ];
+    pkgsWaylandHypr = [
+      grim
+      hyprlock
+      hyprpaper
+      rofi
+      slurp
+      swappy
+      waybar
+      wl-clipboard
+    ];
 
-      pkgsSystemHeaders = [
-        linuxHeaders
-        linuxKernel.packages.linux_6_6.v4l2loopback
-      ];
+    pkgsDesktopCommon = [
+      autokey
+      conky
+      dmenu
+      dunst
+      feh
+      flameshot
+      glava
+      guake
+      ksnip
+      libnotify
+      maim
+      mlterm
+      polkit_gnome
+      st
+      tilda
+      tilix
+      ulauncher
+      virtualgl
+      volctl
+      xclip
+      xdotool
+      xterm
+      yad
+      zenity
+    ];
 
-      pkgsAndroid = [
-        android-tools
-        watchman
-        wmname
-      ];
+    pkgsDesktopKdeQt = [
+      kdePackages.ark
+      kdePackages.kalarm
+    ];
 
-      # Minimal CUDA toolkit for Bend `gen-cu` → `.cu` compilation (~160 MB vs 2-3 GB cudatoolkit).
-      # Uncomment when you actually compile Bend CUDA output; remove after.
-      # Requires: nixpkgs.config.cudaSupport = true; allowUnfree = true.
-      # cudaMinimal = with cudaPackages; [
-      #   cuda_nvcc         # nvcc compiler driver + compiler headers; invokes host compiler (clang) for host code
-      #   cuda_cudart       # libcudart.so + cuda_runtime.h; runtime API (cudaMalloc, cudaLaunchKernel, cudaMemcpy, streams/events)
-      #   cuda_cccl         # CCCL headers (block_load.cuh, nv/target); HVM/Bend kernels use for block-level reductions/scans
-      #   cuda_nvrtc        # nvrtc.h + libnvrtc.so; runtime compilation (JIT) for SM-specific kernels at startup
-      #   # cuda_crt NOT needed: host_config.h moved to cuda_crt in CUDA 13+; we're on Pascal → CUDA 12 max
-      # ];
+    # X11 inspection/compat utilities.
+    pkgsX11Tools = [
+      xdpyinfo
+      xev
+      xhost
+      xmessage
+      xmodmap
+      xprop
+      xrandr
+      xwininfo
+    ];
 
-      pkgsGameLaunchCompat = [
-        appimage-run
-        protontricks
-        vkbasalt-cli
-        wine
-        winetricks
-      ];
+    pkgsXfceCompat = [
+      thunar
+      thunar-volman
+      tumbler
+      xfce4-screenshooter
+      xfce4-whiskermenu-plugin
+    ];
 
-      pkgsGamesNative = [
-        darkplaces
-        gzdoom
-        quakespasm
-      ];
+    pkgsBrowsers = [
+      google-chrome
+      tor-browser
+      ungoogled-chromium
+      inputs.firefox.packages.${pkgs.stdenv.hostPlatform.system}.firefox-nightly-bin
+    ];
 
-      pkgsEmulation = [
-        kega-fusion
-        libjpeg8
-        mednafen
-      ];
+    # Non-core web/network user tools.
+    pkgsWebUserTools = [
+      filezilla
+      speedtest-cli
+    ];
 
-      pkgsIdeEditorsAgents = [
-        unstable.llama-cpp-vulkan
-      ];
-    in
+    pkgsDocsWriting = [
+      abiword
+      calibre
+      djvu2pdf
+      djvulibre
+      exiftool
+      ghostscript
+      graphviz
+      kdePackages.kate
+      kdePackages.okular
+      languagetool
+      ocamlPackages.cpdf
+      pandoc
+      pdftk
+      poppler-utils
+      vale
+      yacreader
+    ];
+
+    pkgsAudioCore = [
+      alsa-tools
+      alsa-utils
+      easyeffects
+      pavucontrol
+      pipewire
+      qpwgraph
+      wireplumber
+    ];
+
+    pkgsAudioProduction = [
+      audacity
+      csound
+      reaper
+      sox
+    ];
+
+    pkgsVideoMedia = [
+      ffmpeg-full
+      mkvtoolnix
+      vlc
+      inputs.unstable.legacyPackages.x86_64-linux.wl-screenrec
+    ];
+
+    pkgsArtImage3d = [
+      blender
+      inkscape
+      openimageio
+    ];
+
+    pkgsEducationMiscGui = [
+      d2
+      hakuneko
+      input-remapper
+      jmtpfs
+      lightspark
+      pspp
+    ];
+
+    pkgsDbServices = [
+      isso
+    ];
+
+    pkgsSystemHeaders = [
+      linuxHeaders
+      linuxKernel.packages.linux_6_6.v4l2loopback
+    ];
+
+    pkgsAndroid = [
+      android-tools
+      watchman
+      wmname
+    ];
+
+    # Minimal CUDA toolkit for Bend `gen-cu` → `.cu` compilation (~160 MB vs 2-3 GB cudatoolkit).
+    # Uncomment when you actually compile Bend CUDA output; remove after.
+    # Requires: nixpkgs.config.cudaSupport = true; allowUnfree = true.
+    # cudaMinimal = with cudaPackages; [
+    #   cuda_nvcc         # nvcc compiler driver + compiler headers; invokes host compiler (clang) for host code
+    #   cuda_cudart       # libcudart.so + cuda_runtime.h; runtime API (cudaMalloc, cudaLaunchKernel, cudaMemcpy, streams/events)
+    #   cuda_cccl         # CCCL headers (block_load.cuh, nv/target); HVM/Bend kernels use for block-level reductions/scans
+    #   cuda_nvrtc        # nvrtc.h + libnvrtc.so; runtime compilation (JIT) for SM-specific kernels at startup
+    #   # cuda_crt NOT needed: host_config.h moved to cuda_crt in CUDA 13+; we're on Pascal → CUDA 12 max
+    # ];
+
+    pkgsGameLaunchCompat = [
+      appimage-run
+      protontricks
+      vkbasalt-cli
+      wine
+      winetricks
+    ];
+
+    pkgsGamesNative = [
+      darkplaces
+      gzdoom
+      quakespasm
+    ];
+
+    pkgsEmulation = [
+      kega-fusion
+      libjpeg8
+      mednafen
+    ];
+
+    pkgsIdeEditorsAgents = [
+      unstable.llama-cpp-vulkan
+    ];
+  in
     lib.unique (
       pkgsShellCore
       ++ pkgsFileArchiveDisk
@@ -1137,7 +1136,6 @@ with pkgs;
       ++ pkgsGamesNative
       ++ pkgsEmulation
       ++ pkgsIdeEditorsAgents
-
       # Full dev toolchain + libraries inlined (was devPkgs.systemPackages)
       ++ devTools.full
       ++ devLibs.full
